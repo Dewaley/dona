@@ -1,3 +1,7 @@
+:root {
+  --dona-light-blue: #008ffd;
+}
+
 *,
 *::before,
 *::after {
