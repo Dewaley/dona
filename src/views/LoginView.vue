@@ -1,3 +1,20 @@
+<script setup>
+import IconDetailed from "../components/icons/IconDetailed.vue";
+</script>
+
 <template>
-  <h2>LoginView</h2>
+  <main>
+    <IconDetailed />
+  </main>
 </template>
+
+<style scoped>
+main {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
