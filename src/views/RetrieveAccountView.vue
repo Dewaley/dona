@@ -7,24 +7,17 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
     <IconDetailed />
     <form>
       <div class="header">
-        <h1>Sign up</h1>
-        <p>Create an account and start using Dona.</p>
+        <h1>Request new password</h1>
+        <p>
+          To reset your password, please enter the email address of your Dona
+          account.
+        </p>
       </div>
       <div class="fields">
-        <input type="text" name="name" id="name" placeholder="Name" />
         <input type="email" name="email" id="email" placeholder="Email" />
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
-        />
-        <button>Sign up</button>
+        <button>Reset password</button>
       </div>
-      <div class="help">
-        <p class="special">Forgot your password?</p>
-        <p>Do you have an account? <span class="special">Log in</span></p>
-      </div>
+      <span class="special">Log in</span>
     </form>
   </main>
 </template>
@@ -62,7 +55,7 @@ form {
 }
 
 .header h1 {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 500;
   color: rgb(39, 39, 43);
 }
@@ -96,21 +89,13 @@ form {
   background-color: #27272b;
   color: white;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
-}
-
-.help {
-  font-size: 1rem;
-  width: 100%;
-}
-
-.help p {
-  font-weight: 300;
 }
 
 .special {
   color: #008ffd;
   font-weight: 300;
+  font-size: 1rem;
 }
 </style>

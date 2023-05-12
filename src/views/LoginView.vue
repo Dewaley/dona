@@ -64,6 +64,7 @@ form {
 
 .header h1 {
   font-size: 2rem;
+  font-weight: 500;
   color: rgb(39, 39, 43);
 }
 
@@ -95,7 +96,7 @@ form {
 .fields button {
   background-color: #27272b;
   color: white;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
 }
