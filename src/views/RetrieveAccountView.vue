@@ -78,11 +78,12 @@ form {
   border-radius: 5px;
   font-size: 1rem;
   padding: 0.5rem;
+  outline: transparent;
 }
 
 .fields input:focus {
   outline: 2px solid #008ffd;
-  border: none;
+  border: transparent;
 }
 
 .fields button {
