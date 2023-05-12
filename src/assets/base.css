@@ -2,11 +2,15 @@
   --dona-light-blue: #008ffd;
 }
 
+html {
+  font-size: 16px;
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
-  position: relative;
+  font-family: "Inter", sans-serif;
   font-weight: normal;
 }
