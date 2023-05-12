@@ -83,12 +83,13 @@ form {
 .fields button {
   border: 1px solid rgb(97, 104, 112, 0.9);
   border-radius: 5px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0.5rem;
 }
 
 .fields input:focus {
   outline: 2px solid #008ffd;
+  border: none;
 }
 
 .fields button {
