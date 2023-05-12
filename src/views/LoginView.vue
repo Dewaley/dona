@@ -33,7 +33,6 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
 <style scoped>
 /* Mobile first design*/
 main {
-  width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -47,7 +46,7 @@ main {
 form {
   background-color: white;
   width: 85vw;
-  max-width: 35rem;
+  max-width: 24rem;
   border-radius: 20px;
   padding: 2rem;
   display: flex;
@@ -59,16 +58,17 @@ form {
 .help {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .header h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: rgb(39, 39, 43);
 }
 
 .header p {
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: rgb(97, 104, 112);
 }
 
@@ -76,14 +76,15 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .fields input,
 .fields button {
-  border: 1px solid rgb(97, 104, 112, 0.7);
+  border: 1px solid rgb(97, 104, 112, 0.9);
   border-radius: 5px;
-  font-size: 1.5rem;
-  padding: 1rem;
+  font-size: 1.2rem;
+  padding: 0.5rem;
 }
 
 .fields input:focus {
@@ -94,11 +95,13 @@ form {
   background-color: #27272b;
   color: white;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .help {
-  font-size: 1.5rem;
+  font-size: 1rem;
+  width: 100%;
 }
 
 .help p {
