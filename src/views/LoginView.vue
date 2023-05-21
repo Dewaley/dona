@@ -1,5 +1,18 @@
 <script setup>
 import IconDetailed from "../components/icons/IconDetailed.vue";
+import { reactive, ref } from "vue";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
+
+const data = reactive({
+  email: "Bastard",
+  password: "",
+});
+
+const alertMessage = () => {
+  console.log(data.email);
+};
+
+const showPassword = ref(false);
 </script>
 
 <template>
@@ -11,13 +24,28 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
         <p>Sign in if you already have an account.</p>
       </div>
       <div class="fields">
-        <input type="email" name="email" id="email" placeholder="Email" />
         <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Password"
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Email"
+          v-model="data.email"
         />
+        <div class="passwordContainer">
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            name="password"
+            id="password"
+            placeholder="Password"
+            v-model="data.password"
+          />
+          <EyeIcon
+            class="eyeIcon"
+            v-if="showPassword"
+            @click="showPassword = false"
+          />
+          <EyeSlashIcon class="eyeIcon" v-else @click="showPassword = true" />
+        </div>
         <button>Sign in</button>
       </div>
       <div class="help">
@@ -31,7 +59,7 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
 </template>
 
 <style scoped>
-/* Mobile first design*/
+/* Mobile-first design*/
 main {
   min-height: 100vh;
   display: flex;
@@ -86,7 +114,39 @@ form {
   border-radius: 5px;
   font-size: 1rem;
   padding: 0.5rem;
-  outline: transparent;
+  outline: 2px solid transparent;
+}
+
+.passwordContainer {
+  border: 1px solid rgb(97, 104, 112, 0.9);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.passwordContainer:focus-within {
+  outline: 2px solid #008ffd;
+  border: 1px solid transparent;
+}
+
+.passwordContainer input {
+  width: calc(100% - 2rem);
+  border: 1px solid transparent;
+}
+
+.passwordContainer input:focus {
+  outline: 2px solid transparent;
+  border: transparent;
+  width: calc(100% - 2rem);
+}
+
+.eyeIcon {
+  height: 2rem;
+  width: 2rem;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
 .fields input:focus {
