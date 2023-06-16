@@ -1,3 +1,3 @@
 <template>
-  <h2>HomeView</h2>
+  <h2>HomeView &#127968;</h2>
 </template>
