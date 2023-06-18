@@ -1,3 +1,7 @@
+<script setup>
+import Popper from "vue3-popper";
+</script>
+
 <template>
   <div class="sidebar">
     <ul>
@@ -7,7 +11,15 @@
           <span class="list">Home</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -17,7 +29,15 @@
           <span class="list">Completed</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -27,7 +47,15 @@
           <span class="list">Today</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -37,7 +65,15 @@
           <span class="list">Personal</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -47,7 +83,15 @@
           <span class="list">Work</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -57,7 +101,15 @@
           <span class="list">Errand</span>
         </span>
         <span class="fragment">
-          <span class="options">&#8942;</span>
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
           <span class="count">7</span>
         </span>
       </li>
@@ -111,23 +163,23 @@ li {
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 5px;
-  background-color: #e7e9ec;
   font-weight: bold;
 }
 .options {
   padding: 0.75rem;
   display: none;
 }
-li:hover .options {
-  display: flex;
+.options:hover {
+  background-color: #e7e9ec;
 }
-.active .options {
+li:hover .options {
   display: flex;
 }
 .active .count {
   color: #616870;
 }
 .count {
+  background-color: #e7e9ec;
   font-size: 0.7rem;
   color: #8f949b;
 }

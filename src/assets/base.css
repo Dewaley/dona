@@ -1,5 +1,10 @@
 :root {
   --dona-light-blue: #008ffd;
+  --popper-theme-background-color: #000;
+  --popper-theme-text-color: #fff;
+  --popper-theme-padding: 0.5rem;
+  --popper-theme-border-radius: 6px;
+  --popper-theme-background-color-hover: #000;
 }
 
 html {
@@ -14,4 +19,8 @@ html {
   padding: 0;
   font-family: "Inter", sans-serif;
   font-weight: normal;
+}
+
+.pop {
+  font-size: 0.75rem;
 }
