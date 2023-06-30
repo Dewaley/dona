@@ -3,130 +3,119 @@ import Popper from "vue3-popper";
 </script>
 
 <template>
-  <div class="sidebar">
-    <ul>
-      <li class="active">
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Home</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Completed</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Today</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Personal</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Work</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Errand</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-    </ul>
-  </div>
+  <ul>
+    <li class="active">
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Home</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+    <li>
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Completed</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+    <li>
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Today</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+    <li>
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Personal</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+    <li>
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Work</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+    <li>
+      <span class="fragment">
+        <span class="logo"></span>
+        <span class="list">Errand</span>
+      </span>
+      <span class="fragment">
+        <Popper
+          class="pop"
+          hover
+          content="List actions"
+          offset-distance="10"
+          placement="top"
+        >
+          <span class="options">&#8942;</span>
+        </Popper>
+        <span class="count">7</span>
+      </span>
+    </li>
+  </ul>
 </template>
 
 <style scoped>
-.sidebar {
-  position: absolute;
-  margin: 0.5rem 0rem 0.5rem 0.5rem;
-  background-color: white;
-  height: calc(100vh - 1rem);
-  min-width: 21.5rem;
-  padding: 2.5rem;
-  border-radius: 23px;
-}
 ul {
   list-style-type: none;
   display: flex;
