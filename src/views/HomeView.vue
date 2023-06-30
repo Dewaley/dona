@@ -2,13 +2,23 @@
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
 import Popper from "vue3-popper";
+import { ref } from "vue";
+
+const isActive = ref(false);
+const toggleSidebar = () => {
+  isActive.value = !isActive.value;
+};
 </script>
 
 <template>
   <!-- <h2>HomeView &#127968;</h2> -->
   <div class="main">
-    <div class="sidebar">
-      <Sidebar />
+    <div class="overlay" :class="{ active: isActive }"></div>
+    <div class="sidebar" :class="{ active: isActive }">
+      <div class="mobile-sidebar"><Sidebar /></div>
+      <div class="desktop-sidebar">
+        <Sidebar />
+      </div>
     </div>
     <div class="container">
       <div class="menu-container">
@@ -18,13 +28,16 @@ import Popper from "vue3-popper";
           content="Category List"
           placement="right"
           offsetDistance="10"
+          disableClickAway="true"
         >
-          <Bars3BottomLeftIcon class="menu"
+          <Bars3BottomLeftIcon class="menu" @click="toggleSidebar"
         /></Popper>
       </div>
       <main>
         <div class="header">
           <h3>Good night Dewaley,</h3>
+          <p v-if="isActive">It is active</p>
+          <p v-else>It is not active</p>
           <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
         </div>
         <form>
@@ -49,6 +62,13 @@ import Popper from "vue3-popper";
   min-width: 280px;
   padding: 2.5rem;
   border-radius: 23px;
+  z-index: 100;
+}
+.mobile-sidebar {
+  display: none;
+}
+.desktop-sidebar {
+  display: initial;
 }
 .container {
   display: flex;
@@ -73,8 +93,9 @@ main {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  width: 100%;
-  display: none;
+  width: calc(100% - 1rem);
+  /* display: none; */
+  /* overflow: hidden; */
 }
 /* .popper {
   white-space: nowrap;
@@ -94,7 +115,18 @@ main {
   .sidebar {
     position: absolute;
     width: 250px;
+    left: -320px;
+    /* display: none; */
+  }
+  .desktop-sidebar {
     display: none;
+  }
+  .mobile-sidebar {
+    display: initial;
+  }
+  .active.sidebar {
+    left: 0;
+    transition: left 350ms ease;
   }
   main {
     width: 85vw;
