@@ -8,12 +8,19 @@ const isActive = ref(false);
 const toggleSidebar = () => {
   isActive.value = !isActive.value;
 };
+const disableSidebar = () => {
+  isActive.value = false;
+};
 </script>
 
 <template>
   <!-- <h2>HomeView &#127968;</h2> -->
   <div class="main">
-    <div class="overlay" :class="{ active: isActive }"></div>
+    <div
+      class="overlay"
+      :class="{ active: isActive }"
+      @click="disableSidebar"
+    ></div>
     <div class="sidebar" :class="{ active: isActive }">
       <div class="mobile-sidebar"><Sidebar /></div>
       <div class="desktop-sidebar">
@@ -29,6 +36,7 @@ const toggleSidebar = () => {
           placement="right"
           offsetDistance="10"
           disableClickAway="true"
+          zIndex="99"
         >
           <Bars3BottomLeftIcon class="menu" @click="toggleSidebar"
         /></Popper>
@@ -36,8 +44,6 @@ const toggleSidebar = () => {
       <main>
         <div class="header">
           <h3>Good night Dewaley,</h3>
-          <p v-if="isActive">It is active</p>
-          <p v-else>It is not active</p>
           <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
         </div>
         <form>
@@ -70,6 +76,9 @@ const toggleSidebar = () => {
 .desktop-sidebar {
   display: initial;
 }
+.overlay {
+  display: none;
+}
 .container {
   display: flex;
   justify-content: center;
@@ -77,24 +86,30 @@ const toggleSidebar = () => {
   position: relative;
 }
 main {
-  /* width: 600px; */
+  width: 65%;
+  /* background-color: brown; */
 }
 .header {
-  margin: 6rem 0 2rem;
+  margin: 3rem 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
-.header h2 {
+.header h3 {
   font-weight: 500;
+  font-size: 1.3rem;
 }
-.header span {
+.header h3 span {
   color: rgb(160, 165, 171);
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 1.2rem;
 }
 .menu-container {
   position: absolute;
   top: 1rem;
   left: 1rem;
   width: calc(100% - 1rem);
-  /* display: none; */
+  display: none;
   /* overflow: hidden; */
 }
 /* .popper {
@@ -116,6 +131,7 @@ main {
     position: absolute;
     width: 250px;
     left: -320px;
+    transition: left 350ms ease;
     /* display: none; */
   }
   .desktop-sidebar {
@@ -127,6 +143,19 @@ main {
   .active.sidebar {
     left: 0;
     transition: left 350ms ease;
+  }
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* background-color: black; */
+    z-index: 99;
+    display: none;
+  }
+  .active.overlay {
+    display: initial;
   }
   main {
     width: 85vw;
