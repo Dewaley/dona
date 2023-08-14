@@ -1,25 +1,73 @@
 <script setup>
 import IconDetailed from "../components/icons/IconDetailed.vue";
+import { auth } from "../firebaseConfig";
+import { ref } from "vue";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+const name = ref("");
+const email = ref("");
+const password = ref("");
+const passwordError = ref("");
+
+const error = ref(null);
+
+const Router = useRouter();
+
+const isValidPassword = (password) => {
+  const trimmedPassword = password.trim();
+  return trimmedPassword.length >= 6;
+};
+
+const Register = () => {
+  console.log(email.value, password.value);
+  if (!isValidPassword(password.value)) {
+    passwordError.value = "Password should be at least 6 characters long";
+    console.log(passwordError.value);
+    setTimeout(() => {
+      passwordError.value = "";
+    }, 5000);
+  } else {
+    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+      .then(() => {
+        console.log("Successfuly registered!");
+        Router.push("/login");
+      })
+      .catch((err) => {
+        error.value = err.message;
+      });
+  }
+};
 </script>
 
 <template>
   <main>
     <IconDetailed />
-    <form>
+    <form @submit.prevent="Register">
       <div class="header">
         <h1>Sign up</h1>
         <p>Create an account and start using Dona.</p>
       </div>
       <div class="fields">
-        <input type="text" name="name" id="name" placeholder="Name" />
-        <input type="email" name="email" id="email" placeholder="Email" />
+        <p class="error" v-if="passwordError !== ''">{{ passwordError }}</p>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Email"
+          v-model="email"
+          required
+        />
         <input
           type="password"
           name="password"
           id="password"
           placeholder="Password"
+          v-model="password"
         />
-        <button>Sign up</button>
+        <button type="submit">Sign up</button>
       </div>
       <div class="help">
         <p class="special">Forgot your password?</p>
@@ -108,6 +156,11 @@ form {
 
 .help p {
   font-weight: 300;
+}
+
+.error {
+  color: red;
+  text-align: center;
 }
 
 .special {

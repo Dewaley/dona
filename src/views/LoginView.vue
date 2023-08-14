@@ -2,27 +2,62 @@
 import IconDetailed from "../components/icons/IconDetailed.vue";
 import { reactive, ref } from "vue";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const data = reactive({
-  email: "Bastard",
+  email: "",
   password: "",
 });
+
+const errMsg = ref();
 
 const alertMessage = () => {
   console.log(data.email);
 };
 
+const isValidPassword = (password) => {
+  const trimmedPassword = password.trim();
+  return trimmedPassword.length >= 6;
+};
+
 const showPassword = ref(false);
+
+const Login = () => {
+  console.log(data.email, data.password);
+  signInWithEmailAndPassword(getAuth(), data.email, data.password)
+    .then(() => {
+      console.log("Successfuly registered!");
+      Router.push("/login");
+    })
+    .catch((err) => {
+      console.log(err.code);
+      switch (err.code) {
+        case "auth/invalid-email":
+          errMsg.value = "Invalid Email";
+          break;
+        case "auth/user-not-found":
+          errMsg.value = "No account with that email was found";
+          break;
+        case "auth/wrong-password":
+          errMsg.value = "Wrong password";
+          break;
+        default:
+          errMsg.value = "Email or password was incorrect";
+          break;
+      }
+    });
+};
 </script>
 
 <template>
   <main>
     <IconDetailed />
-    <form>
+    <form @submit.prevent="Login">
       <div class="header">
         <h1>Log in</h1>
         <p>Sign in if you already have an account.</p>
       </div>
+      <p class="error" v-if="errMsg">{{ errMsg }}</p>
       <div class="fields">
         <input
           type="email"
@@ -30,6 +65,7 @@ const showPassword = ref(false);
           id="email"
           placeholder="Email"
           v-model="data.email"
+          required
         />
         <div class="passwordContainer">
           <input
@@ -46,7 +82,7 @@ const showPassword = ref(false);
           />
           <EyeSlashIcon class="eyeIcon" v-else @click="showPassword = true" />
         </div>
-        <button>Sign in</button>
+        <button type="submit">Sign in</button>
       </div>
       <div class="help">
         <p class="special">Forgot your password?</p>
@@ -174,5 +210,11 @@ form {
 .special {
   color: #008ffd;
   font-weight: 300;
+}
+
+.error {
+  margin: -35px 0;
+  text-align: center;
+  color: red;
 }
 </style>
