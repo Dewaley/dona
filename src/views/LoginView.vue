@@ -27,7 +27,7 @@ const Login = () => {
   signInWithEmailAndPassword(getAuth(), data.email, data.password)
     .then(() => {
       console.log("Successfuly registered!");
-      Router.push("/login");
+      Router.push("/app");
     })
     .catch((err) => {
       console.log(err.code);

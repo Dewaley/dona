@@ -1,6 +1,5 @@
 <script setup>
 import IconDetailed from "../components/icons/IconDetailed.vue";
-import { auth } from "../firebaseConfig";
 import { ref } from "vue";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
@@ -33,7 +32,7 @@ const Register = () => {
     createUserWithEmailAndPassword(getAuth(), email.value, password.value)
       .then(() => {
         console.log("Successfuly registered!");
-        Router.push("/login");
+        Router.push("/app");
       })
       .catch((err) => {
         error.value = err.message;
