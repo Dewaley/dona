@@ -33,15 +33,19 @@ export const router = createRouter({
   ],
 });
 
-const isLoggedIn = ref();
+const initialIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const isLoggedIn = ref(initialIsLoggedIn);
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
+    console.log(user.email);
     if (user) {
+      localStorage.setItem("isLoggedIn", "true");
       isLoggedIn.value = true;
     } else {
+      localStorage.setItem("isLoggedIn", "false");
       isLoggedIn.value = false;
     }
   });

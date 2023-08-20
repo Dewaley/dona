@@ -8,7 +8,7 @@ onMounted(() => {
   auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log(user);
+      console.log(user.uid);
     } else {
       console.log("***", user);
     }

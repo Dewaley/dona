@@ -1,6 +1,6 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
-import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
+import { Bars3BottomLeftIcon, CalendarIcon } from "@heroicons/vue/24/solid";
 import Popper from "vue3-popper";
 import { ref } from "vue";
 
@@ -11,6 +11,9 @@ const toggleSidebar = () => {
 const disableSidebar = () => {
   isActive.value = false;
 };
+
+const isFocused = ref(false);
+const todo = ref("");
 </script>
 
 <template>
@@ -43,11 +46,14 @@ const disableSidebar = () => {
       </div>
       <main>
         <div class="header">
-          <h3>Good night Dewaley,</h3>
+          <h3>Good night Dewaley jjj,</h3>
           <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
         </div>
         <form>
+          <span class="box">Okay</span>
           <input type="text" name="" id="" />
+          <span>e</span>
+          <span><CalendarIcon /></span>
         </form>
       </main>
     </div>
