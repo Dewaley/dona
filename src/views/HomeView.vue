@@ -1,6 +1,7 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
-import { Bars3BottomLeftIcon, CalendarIcon } from "@heroicons/vue/24/solid";
+import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
+import { CalendarIcon } from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
 import { ref } from "vue";
 
@@ -53,7 +54,14 @@ const todo = ref("");
           <span class="box">Okay</span>
           <input type="text" name="" id="" />
           <span>e</span>
-          <span><CalendarIcon /></span>
+          <span
+            ><CalendarIcon />
+            <span>
+              <span>a</span>
+              <span>No List</span>
+              <span>&#8964;</span>
+            </span>
+          </span>
         </form>
       </main>
     </div>
@@ -75,6 +83,7 @@ const todo = ref("");
   padding: 2.5rem;
   border-radius: 23px;
   z-index: 100;
+  position: fixed;
 }
 .mobile-sidebar {
   display: none;
@@ -89,6 +98,7 @@ const todo = ref("");
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-left: 30vw;
   position: relative;
 }
 main {
