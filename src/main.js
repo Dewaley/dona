@@ -17,6 +17,7 @@ const firebaseConfig = {
   messagingSenderId: "420918438618",
   appId: "1:420918438618:web:5063cd35ae58f8f4ac93e3",
   measurementId: "G-MBCSDZNMSX",
+  databaseURL: "https://dona-clone-default-rtdb.firebaseio.com/",
 };
 
 // Initialize Firebase
@@ -27,3 +28,24 @@ const app = createApp(App);
 app.use(router);
 
 app.mount("#app");
+
+/*
+ const users = {
+ 1111: {
+      todos: {
+      
+      },
+      categories: {
+      
+      }
+ },
+ 2222: {
+      todos: {
+            
+            },
+      categories: {
+      
+      }
+ }
+ }
+*/
