@@ -47,17 +47,26 @@ const todo = ref("");
       </div>
       <main>
         <div class="header">
-          <h3>Good night Dewaley jjj,</h3>
+          <h3>Good night Dewaley {{ isFocused }},</h3>
           <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
         </div>
-        <form>
-          <span class="box">Okay</span>
-          <input type="text" name="" id="" />
-          <span>e</span>
-          <span
-            ><CalendarIcon />
-            <span>
-              <span>a</span>
+        <form class="addTodo" :class="{ focusing: isFocused }">
+          <span class="box"></span>
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="Create new task"
+            @focus="isFocused = true"
+            @blur="isFocused = false"
+          />
+          <span class="explicit">e</span>
+          <span class="extras">
+            <span class="calend-container">
+              <CalendarIcon class="calend" />
+            </span>
+            <span class="list-name">
+              <span class="list-style"></span>
               <span>No List</span>
               <span>&#8964;</span>
             </span>
@@ -78,7 +87,7 @@ const todo = ref("");
   margin: 0.5rem 0rem 0.5rem 0.5rem;
   background-color: white;
   height: calc(100vh - 1rem);
-  width: 30vw;
+  width: 27vw;
   min-width: 280px;
   padding: 2.5rem;
   border-radius: 23px;
@@ -98,7 +107,7 @@ const todo = ref("");
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-left: 30vw;
+  margin-left: 27vw;
   position: relative;
 }
 main {
@@ -142,6 +151,110 @@ main {
   background-color: rgba(227, 224, 230, 0.7);
 }
 
+.addTodo {
+  display: flex;
+  align-items: center;
+  background-color: #e0e3e6;
+  padding: 0.75rem;
+  border-radius: 10px;
+}
+
+.addTodo input {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  width: 100%;
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+}
+
+.focusing.addTodo input {
+  width: calc(100% - 9rem);
+}
+
+.addTodo input::placeholder {
+  color: #92979e;
+}
+
+.addTodo .box {
+  width: 1.5rem;
+  height: 1.5rem;
+  max-width: 0px;
+  display: flex;
+  display: flex;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  transition: max-width 0.25s linear;
+}
+
+.focusing.addTodo .box {
+  max-width: 1.5rem;
+  transition: max-width 0.25s linear;
+}
+
+.addTodo .explicit {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d4d7da;
+  border-radius: 5px;
+  text-transform: capitalize;
+  color: #616870;
+  font-size: 0.7rem;
+}
+
+.focusing.addTodo .explicit {
+  display: none;
+}
+
+.addTodo .extras {
+  display: flex;
+  max-width: 0px;
+  overflow: hidden;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.addTodo .calend-container {
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  background-color: #e9ecef;
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+
+.addTodo .calend {
+}
+
+.addTodo .list-name {
+  height: 2rem;
+  width: 5rem;
+  overflow: hidden;
+  background-color: #e9ecef;
+  padding: 0.4rem;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.addTodo .list-name .list-style {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: flex;
+  border: 2px solid #bfc3c7;
+  border-radius: 5px;
+}
+
+.focusing.addTodo .extras {
+  max-width: 8rem;
+}
 @media all and (max-width: 768px) {
   .sidebar {
     position: absolute;
@@ -159,6 +272,10 @@ main {
   .active.sidebar {
     left: 0;
     transition: left 350ms ease;
+  }
+
+  .container {
+    margin-left: 0;
   }
   .overlay {
     position: absolute;
