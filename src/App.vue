@@ -6,6 +6,7 @@ import { RouterView } from "vue-router";
 let auth;
 onMounted(() => {
   auth = getAuth();
+  console.log("user", auth.currentUser);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log(user.uid);

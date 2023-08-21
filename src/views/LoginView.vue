@@ -3,13 +3,14 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
 import { reactive, ref } from "vue";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "vue-router";
 
-const data = reactive({
-  email: "",
-  password: "",
-});
+const email = ref("");
+const password = ref("");
 
 const errMsg = ref();
+
+const Router = useRouter();
 
 const alertMessage = () => {
   console.log(data.email);
@@ -23,14 +24,13 @@ const isValidPassword = (password) => {
 const showPassword = ref(false);
 
 const Login = () => {
-  console.log(data.email, data.password);
-  signInWithEmailAndPassword(getAuth(), data.email, data.password)
+  signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
-      console.log("Successfuly registered!");
+      console.log("Successfuly logged in!");
       Router.push("/app");
     })
     .catch((err) => {
-      console.log(err.code);
+      console.log("err.code", err.code);
       switch (err.code) {
         case "auth/invalid-email":
           errMsg.value = "Invalid Email";
@@ -64,7 +64,7 @@ const Login = () => {
           name="email"
           id="email"
           placeholder="Email"
-          v-model="data.email"
+          v-model="email"
           required
         />
         <div class="passwordContainer">
@@ -73,7 +73,7 @@ const Login = () => {
             name="password"
             id="password"
             placeholder="Password"
-            v-model="data.password"
+            v-model="password"
           />
           <EyeIcon
             class="eyeIcon"

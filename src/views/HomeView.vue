@@ -180,16 +180,18 @@ main {
   width: 1.5rem;
   height: 1.5rem;
   max-width: 0px;
+  max-height: 0px;
   display: flex;
   display: flex;
   background-color: #e9ecef;
   border-radius: 5px;
-  transition: max-width 0.25s linear;
+  transition: max-width 0.25s linear, max-height 0.25s linear;
 }
 
 .focusing.addTodo .box {
   max-width: 1.5rem;
-  transition: max-width 0.25s linear;
+  max-height: 1.5rem;
+  transition: max-width 0.25s linear, max-height 0.25s linear;
 }
 
 .addTodo .explicit {

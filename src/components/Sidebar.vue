@@ -1,127 +1,150 @@
 <script setup>
 import Popper from "vue3-popper";
+import { signOut, getAuth } from "firebase/auth";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const logout = () => {
+  const auth = getAuth();
+  signOut(auth).then(() => {
+    console.log("signed out!");
+    router.push("/login");
+  });
+};
 </script>
 
 <template>
-  <ul>
-    <li class="active">
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Home</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-    <li>
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Completed</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-    <li>
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Today</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-    <li>
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Personal</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-    <li>
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Work</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-    <li>
-      <span class="fragment">
-        <span class="logo"></span>
-        <span class="list">Errand</span>
-      </span>
-      <span class="fragment">
-        <Popper
-          class="pop"
-          hover
-          content="List actions"
-          offset-distance="10"
-          placement="top"
-        >
-          <span class="options">&#8942;</span>
-        </Popper>
-        <span class="count">7</span>
-      </span>
-    </li>
-  </ul>
+  <div class="side-container">
+    <ul>
+      <li class="active">
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Home</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li>
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Completed</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li>
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Today</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li>
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Personal</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li>
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Work</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li>
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Errand</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+    </ul>
+    <button class="logout" @click="logout">Sign out</button>
+  </div>
 </template>
 
 <style scoped>
+.side-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 ul {
   list-style-type: none;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 li {
   display: flex;
   justify-content: space-between;
@@ -178,5 +201,17 @@ li:hover .options {
   display: flex;
   border: 2px solid red;
   border-radius: 5px;
+}
+
+.logout {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  background-color: red;
+  color: white;
+  cursor: pointer;
 }
 </style>

@@ -36,22 +36,41 @@ export const router = createRouter({
 const initialIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 const isLoggedIn = ref(initialIsLoggedIn);
 
-router.beforeEach((to, from, next) => {
+const getCurrentUser = () => {
+  const auth = getAuth();
+  return new Promise((resolve, reject) => {
+    const removeListener = onAuthStateChanged(
+      auth,
+      (user) => {
+        removeListener();
+        resolve(user);
+      },
+      reject
+    );
+  });
+};
+
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
-    console.log(user.email);
-    if (user) {
-      localStorage.setItem("isLoggedIn", "true");
-      isLoggedIn.value = true;
-    } else {
-      localStorage.setItem("isLoggedIn", "false");
-      isLoggedIn.value = false;
-    }
-  });
+  // onAuthStateChanged(auth, (user) => {
+  //   console.log(user.email);
+  //   if (user) {
+  //     localStorage.setItem("isLoggedIn", "true");
+  //     isLoggedIn.value = true;
+  //   } else {
+  //     localStorage.setItem("isLoggedIn", "false");
+  //     isLoggedIn.value = false;
+  //   }
+  // });
   console.log(requiresAuth, isLoggedIn.value);
-  if (requiresAuth && !isLoggedIn.value) {
-    next("/login");
+  if (requiresAuth) {
+    if (await getCurrentUser()) {
+      next();
+    } else {
+      console.log("you don't have access!");
+      next("/login");
+    }
   } else {
     next();
   }
