@@ -3,7 +3,7 @@ import IconDetailed from "../components/icons/IconDetailed.vue";
 import { reactive, ref } from "vue";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { useRouter, RouterLink } from "vue-router";
 
 const email = ref("");
 const password = ref("");
@@ -87,7 +87,10 @@ const Login = () => {
       <div class="help">
         <p class="special">Forgot your password?</p>
         <p>
-          Don't have an account? <span class="special">Sign up for free</span>
+          Don't have an account?
+          <RouterLink to="/register" class="special"
+            >Sign up for free</RouterLink
+          >
         </p>
       </div>
     </form>

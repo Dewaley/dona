@@ -47,7 +47,7 @@ const todo = ref("");
       </div>
       <main>
         <div class="header">
-          <h3>Good night Dewaley {{ isFocused }},</h3>
+          <h3>Good night,</h3>
           <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
         </div>
         <form class="addTodo" :class="{ focusing: isFocused }">
@@ -85,7 +85,7 @@ const todo = ref("");
 }
 .sidebar {
   margin: 0.5rem 0rem 0.5rem 0.5rem;
-  background-color: white;
+  background-color: #f9f9fb;
   height: calc(100vh - 1rem);
   width: 27vw;
   min-width: 280px;
@@ -181,7 +181,6 @@ main {
   height: 1.5rem;
   max-width: 0px;
   max-height: 0px;
-  display: flex;
   display: flex;
   background-color: #e9ecef;
   border-radius: 5px;

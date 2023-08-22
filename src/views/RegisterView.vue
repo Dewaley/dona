@@ -6,7 +6,6 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
-const name = ref("");
 const email = ref("");
 const password = ref("");
 const passwordError = ref("");

@@ -25,7 +25,8 @@ export const router = createRouter({
       component: RetrieveAccountView,
     },
     {
-      path: "/app",
+      path: "/",
+      alias: "/app",
       name: "home",
       component: () => import("../views/HomeView.vue"),
       meta: { requiresAuth: true },
