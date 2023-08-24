@@ -298,4 +298,10 @@ main {
     display: block;
   }
 }
+
+@media all and (max-width: 320px) {
+  .sidebar {
+    overflow: scroll;
+  }
+}
 </style>
