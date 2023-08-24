@@ -1,34 +1,94 @@
 <script setup>
 import Popper from "vue3-popper";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { signOut, getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
+import { colorNames, colorList } from "../components/ColorNames";
+import { onClickOutside } from "@vueuse/core";
 
 const router = useRouter();
 
 const isFocused = ref(false);
-const colors = ref([]);
+const customColor = ref("#0096FF");
+const mainBoxColor = ref(customColor.value);
+const showColors = ref(false);
+const inputField = ref(null);
+const colorBox = ref(null);
+const newList = ref(null);
 
-const generateColors = () => {
-  const count = 16;
-  const letters = "0123456789ABCDEF";
+const newCategory = reactive({
+  category: "",
+  color: customColor.value,
+});
 
-  for (let index = 0; index < count; index++) {
-    let color = "#";
-    for (let j = 0; j < 6; j++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    colors.value.push(color);
+onClickOutside(colorBox, (e) => {
+  if (showColors) {
+    showColors.value = false;
+  }
+});
+
+const toggleShowColors = () => {
+  showColors.value = true;
+};
+
+const toggleInput = () => {
+  isFocused.value = true;
+  if (inputField.value) {
+    inputField.value.focus();
   }
 };
 
-generateColors();
+// const generateColors = () => {
+//   const count = 16;
+//   const letters = "0123456789ABCDEF";
+
+//   for (let index = 0; index < count; index++) {
+//     let color = "#";
+//     for (let j = 0; j < 6; j++) {
+//       color += letters[Math.floor(Math.random() * 16)];
+//     }
+//     colorList.value.push(color);
+//   }
+//   console.log(colorList.value);
+// };
+
+const changeBoxColor = () => {
+  if (isValidColor(customColor.value)) {
+    mainBoxColor.value = customColor.value;
+  }
+};
+
+const isValidColor = (value) => {
+  const colorRegex = /^#([0-9A-F]{3}){1,2}$/i;
+  const result =
+    colorRegex.test(value) || colorNames.includes(value.toLowerCase());
+  // console.log(result);
+  return result;
+};
+
+// generateColors();
+
+const categoryColor = (color) => {
+  color
+    ? (newCategory.color = color)
+    : (newCategory.color = mainBoxColor.value);
+
+  customColor.value = "#000000";
+  showColors.value = false;
+
+  console.log(newCategory);
+};
+
+const addCategory = () => {
+  console.log(newCategory);
+  inputField.value.value = "";
+};
 
 const logout = () => {
   const auth = getAuth();
   signOut(auth).then(() => {
-    console.log("signed out!");
+    // console.log("signed out!");
     router.push("/login");
   });
 };
@@ -145,35 +205,54 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <form class="new-list-container" :class="{ focusing: isFocused }">
+      <form
+        class="new-list-container"
+        :class="{ focusing: isFocused }"
+        @submit.prevent="addCategory"
+        ref="newList"
+      >
         <span class="addIcons">
-          <PlusIcon class="plus" />
-          <div class="dropdown-container">
-            <span class="logo"></span>
+          <PlusIcon class="plus" @click="toggleInput" />
+          <div class="dropdown-container" @click="toggleShowColors">
+            <span
+              class="logo"
+              :style="{ borderColor: newCategory.color }"
+            ></span>
             <ChevronDownIcon class="dropdown" />
           </div>
         </span>
-        <input
-          type="text"
-          placeholder="Create new list"
-          @focus="isFocused = true"
-          @blur="isFocused = false"
-        />
+        <div class="fields">
+          <button @click="toggleInput">Create new list</button>
+          <input
+            ref="inputField"
+            type="text"
+            placeholder="List name"
+            v-model="newCategory.category"
+          />
+        </div>
         <span class="extra">D</span>
-        <div class="color-options">
+        <div class="color-options" :class="{ show: showColors }" ref="colorBox">
           <h4>Colors</h4>
           <div class="colors">
             <span
-              v-for="color in colors"
+              v-for="color in colorList"
               :key="color"
               :style="{ backgroundColor: color }"
+              @click="categoryColor(color)"
             ></span>
           </div>
           <div class="custom">
             <p>Custom color</p>
-            <form action="">
-              <div class="sample"></div>
-              <input type="text" value="black" />
+            <form action="" @submit.prevent="categoryColor()">
+              <div
+                class="sample"
+                :style="{ backgroundColor: mainBoxColor }"
+              ></div>
+              <input
+                type="text"
+                v-model="customColor"
+                @input="changeBoxColor"
+              />
             </form>
           </div>
         </div>
@@ -282,24 +361,43 @@ li:hover .options {
   height: 1rem;
 }
 
-.new-list-container input {
+.new-list-container .fields {
+  display: flex;
+  margin-left: 0.5rem;
   width: 100%;
+}
+
+.new-list-container .fields button {
+  width: 100%;
+  text-align: left;
   border: none;
-  padding-left: 0.75rem;
+  background-color: transparent;
+  color: #616870;
+  cursor: pointer;
+}
+
+.new-list-container:hover .fields button {
+  color: #000;
+}
+
+.new-list-container .fields input {
+  width: 100%;
+  max-width: 0px;
+  border: none;
   outline: none;
   font-size: 0.9rem;
   cursor: pointer !important;
   background-color: transparent;
 }
 
-.new-list-container input::placeholder {
+.new-list-container .fields input::placeholder {
   color: #616870;
 }
 
-.new-list-container input:focus {
+.new-list-container .fields input:focus {
   cursor: text !important;
 }
-.new-list-container input:focus::placeholder {
+.new-list-container .fields input:focus::placeholder {
   color: #000;
 }
 
@@ -311,13 +409,14 @@ li:hover .options {
   align-items: center;
   padding: 0.3rem;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .new-list-container:hover .plus {
   background-color: #f2f4f7;
 }
 
-.new-list-container:hover input::placeholder {
+.new-list-container:hover .fields input::placeholder {
   color: #000;
 }
 
@@ -338,23 +437,35 @@ li:hover .options {
   align-items: center;
   gap: 0.25rem;
   background-color: #f2f4f7;
-  padding: 0.4rem;
-  border-radius: 5px;
   max-width: 0px;
-  display: none;
+  height: 1.5rem;
+  width: 2.5rem;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
   overflow: hidden;
+  transition: max-width 0.1s linear;
 }
 
 .new-list-container .dropdown-container .logo {
   width: 0.8rem;
   height: 0.8rem;
   display: flex;
-  border: 2px solid red;
+  border: 2px solid;
   border-radius: 4px;
 }
 
 .new-list-container .dropdown {
   height: 0.8rem;
+}
+
+.focusing.new-list-container .fields button {
+  display: none;
+}
+
+.focusing.new-list-container .fields input {
+  max-width: fit-content;
 }
 
 .focusing.new-list-container .addIcons .plus,
@@ -364,7 +475,7 @@ li:hover .options {
 
 .focusing.new-list-container .addIcons .dropdown-container {
   max-width: 4rem;
-  display: flex;
+  opacity: 1;
 }
 
 .new-list-container .color-options {
@@ -373,10 +484,16 @@ li:hover .options {
   /* width: 20rem; */
   padding: 1rem 0;
   border-radius: 10px;
-  display: flex;
+  display: none;
+  opacity: 0;
   flex-direction: column;
   gap: 1rem;
   background-color: #fefefe;
+}
+
+.new-list-container .show.color-options {
+  display: flex;
+  opacity: 1;
 }
 
 .new-list-container .color-options h4 {
@@ -407,16 +524,36 @@ li:hover .options {
 }
 
 .new-list-container .color-options .custom {
-  padding: 0.5rem 1rem;
+  padding: 0rem 1rem;
   display: flex;
   justify-content: space-between;
   width: 100%;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   white-space: nowrap;
+  align-items: center;
 }
 
 .new-list-container .color-options .custom form {
   border: 1px solid #e7e9ec;
-  width: 6rem;
+  width: 7rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  border-radius: 10px;
+}
+
+.new-list-container .color-options .custom form .sample {
+  aspect-ratio: 1/1;
+  height: 1rem;
+  border-radius: 5px;
+}
+
+.new-list-container .color-options .custom form input {
+  padding: 0;
+  width: 100%;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
 }
 </style>
