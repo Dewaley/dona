@@ -258,7 +258,7 @@ main {
 }
 @media all and (max-width: 768px) {
   .sidebar {
-    position: absolute;
+    position: fixed;
     width: 250px;
     left: -320px;
     transition: left 350ms ease;

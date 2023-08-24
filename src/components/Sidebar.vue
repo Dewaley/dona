@@ -234,12 +234,14 @@ const logout = () => {
         <div class="color-options" :class="{ show: showColors }" ref="colorBox">
           <h4>Colors</h4>
           <div class="colors">
-            <span
+            <div
               v-for="color in colorList"
               :key="color"
-              :style="{ backgroundColor: color }"
               @click="categoryColor(color)"
-            ></span>
+              :style="{ borderColor: color }"
+            >
+              <span :style="{ backgroundColor: color }"></span>
+            </div>
           </div>
           <div class="custom">
             <p>Custom color</p>
@@ -274,7 +276,7 @@ ul {
   list-style-type: none;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 li {
@@ -351,7 +353,6 @@ li:hover .options {
   display: flex;
   align-items: center;
   padding: 0.75rem;
-  position: relative;
   /* gap: 2rem; */
 }
 
@@ -480,7 +481,7 @@ li:hover .options {
 
 .new-list-container .color-options {
   position: absolute;
-  top: 3rem;
+  top: 21rem;
   /* width: 20rem; */
   padding: 1rem 0;
   border-radius: 10px;
@@ -503,28 +504,39 @@ li:hover .options {
   width: fit-content;
   font-size: 0.9rem;
   box-shadow: -0.5px 0.5px 2.6px #d2d5d7, 0.5px -0.5px 2.6px #ffffff;
-  margin: 0 1rem;
+  margin: 0 0.75rem;
 }
 
 .new-list-container .color-options .colors {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 1.5rem;
+  gap: 0.35rem;
   justify-items: center;
   align-items: center;
-  padding: 1rem 1.5rem 1.75rem;
+  padding: 0.75rem;
   border-bottom: 1px solid #f2f4f7;
 }
 
-.new-list-container .color-options .colors span {
+.new-list-container .color-options .colors div {
   aspect-ratio: 1/1;
-  height: 1rem;
+  height: 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-list-container .color-options .colors div span {
+  aspect-ratio: 1/1;
+  height: 0.75rem;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .new-list-container .color-options .custom {
-  padding: 0rem 1rem;
+  padding: 0rem 0.75rem;
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -555,5 +567,15 @@ li:hover .options {
   outline: 0;
   border: 0;
   background-color: transparent;
+}
+
+@media all and (max-width: 768px) {
+  .new-list-container .color-options .colors div {
+    height: 1.5rem;
+  }
+
+  .new-list-container .color-options .colors div span {
+    height: 0.75rem;
+  }
 }
 </style>
