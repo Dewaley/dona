@@ -4,6 +4,7 @@ import { reactive, ref } from "vue";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter, RouterLink } from "vue-router";
+import {auth} from "../main"
 
 const email = ref("");
 const password = ref("");
@@ -24,7 +25,7 @@ const isValidPassword = (password) => {
 const showPassword = ref(false);
 
 const Login = () => {
-  signInWithEmailAndPassword(getAuth(), email.value, password.value)
+  signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
       console.log("Successfuly logged in!");
       Router.push("/app");

@@ -5,6 +5,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, set, ref as firebaseRef } from "firebase/database";
+import { auth, db } from "../main";
 
 const email = ref("");
 const password = ref("");
@@ -19,6 +21,18 @@ const isValidPassword = (password) => {
   return trimmedPassword.length >= 6;
 };
 
+const addCategories = () => {
+  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), {
+    home: "#AE2783",
+    completed: "#ACC1FA",
+    today: "#5DC015",
+    personal: "#D9B120",
+    work: "#8E4207",
+    errands: "#E7C93D",
+    road_trip: "#75FA92",
+  });
+};
+
 const Register = () => {
   console.log(email.value, password.value);
   if (!isValidPassword(password.value)) {
@@ -28,10 +42,11 @@ const Register = () => {
       passwordError.value = "";
     }, 5000);
   } else {
-    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+    createUserWithEmailAndPassword(auth, email.value, password.value)
       .then(() => {
-        console.log("Successfuly registered!");
         Router.push("/app");
+        console.log("Successfuly registered!");
+        addCategories();
       })
       .catch((err) => {
         error.value = err.message;

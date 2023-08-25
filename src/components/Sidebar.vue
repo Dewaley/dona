@@ -6,6 +6,10 @@ import { useRouter } from "vue-router";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { colorNames, colorList } from "../components/ColorNames";
 import { onClickOutside } from "@vueuse/core";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../main";
+import { ref as firebasRef, onValue } from "firebase/database";
+import { onMounted } from "vue";
 
 const router = useRouter();
 
@@ -16,6 +20,25 @@ const showColors = ref(false);
 const inputField = ref(null);
 const colorBox = ref(null);
 const newList = ref(null);
+const categories = reactive({});
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      onValue(
+        firebasRef(db, `/${auth.currentUser.uid}/categories`),
+        (snapshot) => {
+          const data = snapshot.val();
+          for (const category in data) {
+            categories[category] = data[category];
+          }
+        }
+      );
+    } else {
+      console.log("***", user);
+    }
+  });
+});
 
 const newCategory = reactive({
   category: "",
@@ -97,10 +120,10 @@ const logout = () => {
 <template>
   <div class="side-container">
     <ul>
-      <li class="active">
+      <li v-for="(color, category) in categories" class="active">
         <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Home</span>
+          <span class="logo" :style="{ borderColor: color }"></span>
+          <span class="list">{{ Category }}</span>
         </span>
         <span class="fragment">
           <Popper
@@ -115,96 +138,7 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Completed</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Today</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Personal</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Work</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
-      <li>
-        <span class="fragment">
-          <span class="logo"></span>
-          <span class="list">Errand</span>
-        </span>
-        <span class="fragment">
-          <Popper
-            class="pop"
-            hover
-            content="List actions"
-            offset-distance="10"
-            placement="top"
-          >
-            <span class="options">&#8942;</span>
-          </Popper>
-          <span class="count">7</span>
-        </span>
-      </li>
+
       <form
         class="new-list-container"
         :class="{ focusing: isFocused }"
@@ -238,7 +172,6 @@ const logout = () => {
               v-for="color in colorList"
               :key="color"
               @click="categoryColor(color)"
-              :style="{ borderColor: color }"
             >
               <span :style="{ backgroundColor: color }"></span>
             </div>
@@ -522,7 +455,6 @@ li:hover .options {
   height: 1.5rem;
   border-radius: 5px;
   cursor: pointer;
-  border: 1px solid;
   display: flex;
   justify-content: center;
   align-items: center;
