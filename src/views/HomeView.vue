@@ -1,17 +1,35 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
+import { SparklesIcon } from "@heroicons/vue/24/outline";
 import { CalendarIcon } from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { ref as firebaseRef, onValue, set } from "firebase/database";
+import { auth, db } from "../main";
+import { onAuthStateChanged } from "firebase/auth";
 
 const isActive = ref(false);
+const todos = ref([]);
+
 const toggleSidebar = () => {
   isActive.value = !isActive.value;
 };
 const disableSidebar = () => {
   isActive.value = false;
 };
+
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    user &&
+      onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
+        const data = snapshot.val();
+        if (data === null) {
+          todos.value = [];
+        }
+      });
+  });
+});
 
 const isFocused = ref(false);
 const todo = ref("");
@@ -72,6 +90,10 @@ const todo = ref("");
             </span>
           </span>
         </form>
+        <div class="no-todos" v-if="todos.length < 1">
+          <SparklesIcon class="sparkles" />
+          <p>You're all done.</p>
+        </div>
       </main>
     </div>
   </div>
@@ -81,12 +103,14 @@ const todo = ref("");
 .main {
   background-color: #eceeef;
   min-height: 100vh;
+  overflow-y: scroll;
   display: flex;
 }
 .sidebar {
   margin: 0.5rem 0rem 0.5rem 0.5rem;
   background-color: #f9f9fb;
   height: calc(100vh - 1rem);
+  overflow-y: scroll;
   width: 27vw;
   min-width: 280px;
   padding: 2.5rem;
@@ -157,6 +181,22 @@ main {
   background-color: #e0e3e6;
   padding: 0.75rem;
   border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.no-todos {
+  color: #dadde0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 15rem;
+  font-weight: 500 !important;
+}
+
+.no-todos .sparkles {
+  height: 10rem;
 }
 
 .addTodo input {

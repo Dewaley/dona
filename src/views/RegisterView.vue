@@ -23,10 +23,7 @@ const isValidPassword = (password) => {
 
 const addCategories = () => {
   set(firebaseRef(db, `${auth.currentUser.uid}/categories`), {
-    home: "#AE2783",
-    completed: "#ACC1FA",
-    today: "#5DC015",
-    personal: "#D9B120",
+    personal: "#C08FD1",
     work: "#8E4207",
     errands: "#E7C93D",
     road_trip: "#75FA92",

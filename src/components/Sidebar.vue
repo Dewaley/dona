@@ -8,7 +8,7 @@ import { colorNames, colorList } from "../components/ColorNames";
 import { onClickOutside } from "@vueuse/core";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../main";
-import { ref as firebasRef, onValue } from "firebase/database";
+import { ref as firebaseRef, onValue, set } from "firebase/database";
 import { onMounted } from "vue";
 
 const router = useRouter();
@@ -26,9 +26,10 @@ onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       onValue(
-        firebasRef(db, `/${auth.currentUser.uid}/categories`),
+        firebaseRef(db, `/${auth.currentUser.uid}/categories`),
         (snapshot) => {
           const data = snapshot.val();
+          // console.log(data);
           for (const category in data) {
             categories[category] = data[category];
           }
@@ -104,7 +105,11 @@ const categoryColor = (color) => {
 };
 
 const addCategory = () => {
-  console.log(newCategory);
+  console.log(newCategory.category, newCategory.color);
+  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), {
+    ...categories,
+    [newCategory.category.toLowerCase()]: newCategory.color,
+  });
   inputField.value.value = "";
 };
 
@@ -120,10 +125,64 @@ const logout = () => {
 <template>
   <div class="side-container">
     <ul>
+      <li class="active home">
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Home</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li class="active completed">
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Completed</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
+      <li class="active today">
+        <span class="fragment">
+          <span class="logo"></span>
+          <span class="list">Today</span>
+        </span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+      </li>
       <li v-for="(color, category) in categories" class="active">
         <span class="fragment">
           <span class="logo" :style="{ borderColor: color }"></span>
-          <span class="list">{{ Category }}</span>
+          <span class="list">{{ category }}</span>
         </span>
         <span class="fragment">
           <Popper
@@ -147,7 +206,11 @@ const logout = () => {
       >
         <span class="addIcons">
           <PlusIcon class="plus" @click="toggleInput" />
-          <div class="dropdown-container" @click="toggleShowColors">
+          <div
+            class="dropdown-container"
+            :class="{ working: showColors }"
+            @click="toggleShowColors"
+          >
             <span
               class="logo"
               :style="{ borderColor: newCategory.color }"
@@ -203,6 +266,7 @@ const logout = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 4rem;
 }
 
 ul {
@@ -227,6 +291,18 @@ li {
 }
 .list {
   font-weight: 500;
+  text-transform: capitalize;
+}
+.home .logo {
+  border-color: #ae2783;
+}
+
+.today .logo {
+  border-color: #5dc015;
+}
+
+.completed .logo {
+  border-color: #acc1fa;
 }
 .fragment {
   display: flex;
@@ -247,6 +323,10 @@ li {
 .options {
   padding: 0.75rem;
   display: none;
+}
+
+.working {
+  border: 2px solid;
 }
 .options:hover {
   background-color: #e7e9ec;
