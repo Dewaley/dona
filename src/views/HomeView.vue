@@ -1,20 +1,33 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
-import { SparklesIcon, CheckIcon } from "@heroicons/vue/24/outline";
+import {
+  SparklesIcon,
+  CheckIcon,
+  ChevronDownIcon,
+} from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
 import { onMounted, ref, reactive } from "vue";
 import { ref as firebaseRef, onValue, set } from "firebase/database";
 import { auth, db } from "../main";
 import { onAuthStateChanged } from "firebase/auth";
+import { uid } from "uid";
 
 const isActive = ref(false);
 const todos = ref({});
-const chosen = reactive({});
+const chosen = ref("");
 const showList = ref(false);
+const todo = ref("na me be this");
 
 const toggleShowList = () => {
   showList.value = !showList.value;
+};
+const processString = (inputString) => {
+  if (inputString.length <= 10) {
+    return inputString;
+  } else {
+    return inputString.slice(0, 10) + "...";
+  }
 };
 
 const toggleSidebar = () => {
@@ -23,8 +36,11 @@ const toggleSidebar = () => {
 const disableSidebar = () => {
   isActive.value = false;
 };
+const setChosen = (category) => {
+  chosen.value = category;
+  showList.value = false;
+};
 
-const date = ref(null);
 const categories = reactive({});
 
 onMounted(() => {
@@ -50,8 +66,17 @@ onMounted(() => {
   });
 });
 
+const addTodo = () => {
+  const todoId = uid();
+  set(firebaseRef(db, `${auth.currentUser.uid}/todos`), {
+    todo: todo.value,
+    id: todoId,
+    isCompleted: false,
+    category: chosen.value === "" ? null : chosen.value,
+  });
+};
+
 const isFocused = ref(false);
-const todo = ref("");
 
 const modifyCategory = (inputString) => {
   if (typeof inputString !== "string") {
@@ -109,13 +134,18 @@ const getObjectLength = (obj) => {
             <span v-else>It's Tuesday, Jun 20 - 7 tasks</span>
           </h3>
         </div>
-        <form class="addTodo" :class="{ focusing: isFocused }">
+        <form
+          class="addTodo"
+          :class="{ focusing: isFocused }"
+          @submit.prevent="addTodo"
+        >
           <span class="box"></span>
           <input
             type="text"
             name=""
             id=""
             placeholder="Create new task"
+            v-model="todo"
             @focus="isFocused = true"
           />
           <span class="explicit">e</span>
@@ -123,23 +153,24 @@ const getObjectLength = (obj) => {
             <span class="list-name" @click="toggleShowList">
               <span class="list-style"></span>
               <span>{{
-                Object.keys(chosen).length === 0
+                chosen === ""
                   ? "No List"
-                  : Object.keys(chosen)[0]
+                  : processString(modifyCategory(chosen))
               }}</span>
-              <span>&#8964;</span>
+              <ChevronDownIcon class="drop" />
             </span>
           </span>
           <ul v-if="showList">
-            <li v-for="(color, category) in categories" :key="category">
+            <li
+              v-for="(color, category) in categories"
+              :key="category"
+              @click="setChosen(category)"
+            >
               <div>
                 <span class="ring" :style="{ borderColor: color }"></span>
                 <span class="cat">{{ modifyCategory(category) }}</span>
               </div>
-              <CheckIcon
-                class="check"
-                v-if="chosen[Object.keys(chosen)[0]] === category"
-              />
+              <CheckIcon class="check" v-if="chosen === category" />
             </li>
           </ul>
         </form>
@@ -260,6 +291,7 @@ main {
   border: none;
   width: 100%;
   font-size: 0.8rem;
+  padding-left: 1rem;
 }
 
 .focusing.addTodo input {
@@ -326,7 +358,7 @@ main {
 
 .addTodo .list-name {
   height: 2rem;
-  width: 5rem;
+  width: 8rem;
   overflow: hidden;
   background-color: #e9ecef;
   padding: 0.4rem;
@@ -337,6 +369,11 @@ main {
   align-items: center;
   justify-content: center;
   gap: 0.3rem;
+  text-transform: capitalize;
+}
+
+.addTodo .list-name .drop {
+  height: 1rem;
 }
 
 .addTodo .list-name .list-style {
