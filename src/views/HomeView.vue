@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
-import { SparklesIcon } from "@heroicons/vue/24/outline";
+import { SparklesIcon, CheckIcon } from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
 import { onMounted, ref, reactive } from "vue";
 import { ref as firebaseRef, onValue, set } from "firebase/database";
@@ -10,6 +10,12 @@ import { onAuthStateChanged } from "firebase/auth";
 
 const isActive = ref(false);
 const todos = ref({});
+const chosen = reactive({});
+const showList = ref(false);
+
+const toggleShowList = () => {
+  showList.value = !showList.value;
+};
 
 const toggleSidebar = () => {
   isActive.value = !isActive.value;
@@ -114,16 +120,26 @@ const getObjectLength = (obj) => {
           />
           <span class="explicit">e</span>
           <span class="extras">
-            <span class="list-name">
+            <span class="list-name" @click="toggleShowList">
               <span class="list-style"></span>
-              <span>No List</span>
+              <span>{{
+                Object.keys(chosen).length === 0
+                  ? "No List"
+                  : Object.keys(chosen)[0]
+              }}</span>
               <span>&#8964;</span>
             </span>
           </span>
-          <ul>
+          <ul v-if="showList">
             <li v-for="(color, category) in categories" :key="category">
-              <span class="ring" :style="{ borderColor: color }"></span>
-              <span class="cat">{{ modifyCategory(category) }}</span>
+              <div>
+                <span class="ring" :style="{ borderColor: color }"></span>
+                <span class="cat">{{ modifyCategory(category) }}</span>
+              </div>
+              <CheckIcon
+                class="check"
+                v-if="chosen[Object.keys(chosen)[0]] === category"
+              />
             </li>
           </ul>
         </form>
@@ -219,6 +235,8 @@ main {
   padding: 0.75rem;
   border-radius: 10px;
   margin-bottom: 2rem;
+  position: relative;
+  justify-content: space-between;
 }
 
 .no-todos {
@@ -242,7 +260,6 @@ main {
   border: none;
   width: 100%;
   font-size: 0.8rem;
-  padding-left: 0.5rem;
 }
 
 .focusing.addTodo input {
@@ -332,6 +349,52 @@ main {
 
 .focusing.addTodo .extras {
   max-width: 8rem;
+}
+
+.addTodo ul {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  right: 0;
+  top: 4rem;
+  background-color: #f9f9fa;
+  width: 11rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.addTodo ul li {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.addTodo ul li:hover {
+  background-color: #eceff2;
+}
+
+.addTodo ul li div {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  text-transform: capitalize;
+}
+
+.addTodo ul li div .ring {
+  width: 0.9rem;
+  height: 0.9rem;
+  display: flex;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+.addTodo ul li .check {
+  height: 1rem;
+  margin-bottom: -2.5px;
 }
 @media all and (max-width: 768px) {
   .sidebar {
