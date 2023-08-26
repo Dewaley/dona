@@ -50,6 +50,12 @@ onMounted(() => {
         const data = snapshot.val();
         if (data === null) {
           todos.value = {};
+        } else {
+          // console.log(data);
+          for (const todo in data) {
+            todos.value[todo] = data[todo];
+            console.log(todos.value);
+          }
         }
       });
       onValue(
@@ -68,12 +74,14 @@ onMounted(() => {
 
 const addTodo = () => {
   const todoId = uid();
-  set(firebaseRef(db, `${auth.currentUser.uid}/todos`), {
+  set(firebaseRef(db, `${auth.currentUser.uid}/todos/${todoId}`), {
     todo: todo.value,
-    id: todoId,
     isCompleted: false,
-    category: chosen.value === "" ? null : chosen.value,
+    category: chosen.value === "" ? "none" : chosen.value,
   });
+  todo.value = "";
+  chosen.value = "";
+  isFocused.value = false;
 };
 
 const isFocused = ref(false);
