@@ -2,15 +2,14 @@
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
 import { SparklesIcon } from "@heroicons/vue/24/outline";
-import { CalendarIcon } from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import { ref as firebaseRef, onValue, set } from "firebase/database";
 import { auth, db } from "../main";
 import { onAuthStateChanged } from "firebase/auth";
 
 const isActive = ref(false);
-const todos = ref([]);
+const todos = ref({});
 
 const toggleSidebar = () => {
   isActive.value = !isActive.value;
@@ -19,20 +18,51 @@ const disableSidebar = () => {
   isActive.value = false;
 };
 
+const date = ref(null);
+const categories = reactive({});
+
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
-    user &&
+    if (user) {
       onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
         const data = snapshot.val();
         if (data === null) {
-          todos.value = [];
+          todos.value = {};
         }
       });
+      onValue(
+        firebaseRef(db, `/${auth.currentUser.uid}/categories`),
+        (snapshot) => {
+          const data = snapshot.val();
+          // console.log(data);
+          for (const category in data) {
+            categories[category] = data[category];
+          }
+        }
+      );
+    }
   });
 });
 
 const isFocused = ref(false);
 const todo = ref("");
+
+const modifyCategory = (inputString) => {
+  if (typeof inputString !== "string") {
+    return inputString;
+  }
+  return inputString.replace(/_/g, " ");
+};
+
+const getObjectLength = (obj) => {
+  let count = 0;
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      count++;
+    }
+  }
+  return count;
+};
 </script>
 
 <template>
@@ -46,7 +76,7 @@ const todo = ref("");
     <div class="sidebar" :class="{ active: isActive }">
       <div class="mobile-sidebar"><Sidebar /></div>
       <div class="desktop-sidebar">
-        <Sidebar />
+        <Sidebar :categories="categories" />
       </div>
     </div>
     <div class="container">
@@ -66,7 +96,12 @@ const todo = ref("");
       <main>
         <div class="header">
           <h3>Good night,</h3>
-          <h3><span>It's Tuesday, Jun 20 - 7 tasks</span></h3>
+          <h3>
+            <span v-if="getObjectLength(todos.value) < 1"
+              >No more tasks. Enjoy your day.
+            </span>
+            <span v-else>It's Tuesday, Jun 20 - 7 tasks</span>
+          </h3>
         </div>
         <form class="addTodo" :class="{ focusing: isFocused }">
           <span class="box"></span>
@@ -76,21 +111,23 @@ const todo = ref("");
             id=""
             placeholder="Create new task"
             @focus="isFocused = true"
-            @blur="isFocused = false"
           />
           <span class="explicit">e</span>
           <span class="extras">
-            <span class="calend-container">
-              <CalendarIcon class="calend" />
-            </span>
             <span class="list-name">
               <span class="list-style"></span>
               <span>No List</span>
               <span>&#8964;</span>
             </span>
           </span>
+          <ul>
+            <li v-for="(color, category) in categories" :key="category">
+              <span class="ring" :style="{ borderColor: color }"></span>
+              <span class="cat">{{ modifyCategory(category) }}</span>
+            </li>
+          </ul>
         </form>
-        <div class="no-todos" v-if="todos.length < 1">
+        <div class="no-todos" v-if="getObjectLength(todos.value) < 1">
           <SparklesIcon class="sparkles" />
           <p>You're all done.</p>
         </div>

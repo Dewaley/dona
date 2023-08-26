@@ -10,6 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../main";
 import { ref as firebaseRef, onValue, set } from "firebase/database";
 import { onMounted } from "vue";
+import { defineProps } from "vue";
 
 const router = useRouter();
 
@@ -20,26 +21,8 @@ const showColors = ref(false);
 const inputField = ref(null);
 const colorBox = ref(null);
 const newList = ref(null);
-const categories = reactive({});
 
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      onValue(
-        firebaseRef(db, `/${auth.currentUser.uid}/categories`),
-        (snapshot) => {
-          const data = snapshot.val();
-          // console.log(data);
-          for (const category in data) {
-            categories[category] = data[category];
-          }
-        }
-      );
-    } else {
-      console.log("***", user);
-    }
-  });
-});
+defineProps(["categories"]);
 
 const newCategory = reactive({
   category: "",
