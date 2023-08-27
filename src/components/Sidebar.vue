@@ -1,6 +1,6 @@
 <script setup>
 import Popper from "vue3-popper";
-import { ref, reactive } from "vue";
+import { ref, reactive, inject } from "vue";
 import { signOut, getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
@@ -21,6 +21,8 @@ const showColors = ref(false);
 const inputField = ref(null);
 const colorBox = ref(null);
 const newList = ref(null);
+
+const { priority, updatePriority } = inject("priority");
 
 defineProps(["categories"]);
 
@@ -162,7 +164,11 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <li v-for="(color, category) in categories" class="active">
+      <li
+        v-for="(color, category) in categories"
+        class="active"
+        @click="updatePriority(category)"
+      >
         <span class="fragment">
           <span class="logo" :style="{ borderColor: color }"></span>
           <span class="list">{{ category }}</span>
