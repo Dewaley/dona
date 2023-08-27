@@ -7,7 +7,7 @@ import {
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref, reactive, provide, watch, computed } from "vue";
 import { ref as firebaseRef, onValue, set } from "firebase/database";
 import { auth, db } from "../main";
 import { onAuthStateChanged } from "firebase/auth";
@@ -15,9 +15,36 @@ import { uid } from "uid";
 
 const isActive = ref(false);
 const todos = ref({});
+const sortedTodos = ref(todos.value);
+const todoLength = computed(() => getObjectLength(sortedTodos.value));
 const chosen = ref("");
 const showList = ref(false);
-const todo = ref("na me be this");
+const todo = ref("");
+const priority = ref("none");
+const filteredSortedTodos = computed(() => {
+  const filtered = {};
+  const sorted = {};
+  Object.entries(todos).forEach(([key, item]) => {
+    if (item.category === priority.value) {
+      filtered[key] = item;
+    }
+  });
+  const keys = Object.keys(filtered);
+  keys.sort((a, b) => b - a);
+  const sortedObject = {};
+  for (const key of keys) {
+    sortedObject[key] = this.items[key];
+  }
+
+  return sortedObject;
+});
+
+const updatePriority = (cat) => {
+  priority.value = cat;
+  console.log(priority.value);
+};
+
+provide("priority", { priority, updatePriority });
 
 const toggleShowList = () => {
   showList.value = !showList.value;
@@ -54,6 +81,7 @@ onMounted(() => {
           // console.log(data);
           for (const todo in data) {
             todos.value[todo] = data[todo];
+            sortedTodos.value[todo] = data[todo];
             console.log(todos.value);
           }
         }
@@ -73,8 +101,8 @@ onMounted(() => {
 });
 
 const addTodo = () => {
-  const todoId = uid();
-  set(firebaseRef(db, `${auth.currentUser.uid}/todos/${todoId}`), {
+  const currentTimestamp = Date.now();
+  set(firebaseRef(db, `${auth.currentUser.uid}/todos/${currentTimestamp}`), {
     todo: todo.value,
     isCompleted: false,
     category: chosen.value === "" ? "none" : chosen.value,
@@ -100,6 +128,7 @@ const getObjectLength = (obj) => {
       count++;
     }
   }
+  console.log("count", count);
   return count;
 };
 </script>
@@ -134,11 +163,10 @@ const getObjectLength = (obj) => {
       </div>
       <main>
         <div class="header">
+          {{ priority }}
           <h3>Good night,</h3>
           <h3>
-            <span v-if="getObjectLength(todos.value) < 1"
-              >No more tasks. Enjoy your day.
-            </span>
+            <span v-if="todoLength < 1">No more tasks. Enjoy your day. </span>
             <span v-else>It's Tuesday, Jun 20 - 7 tasks</span>
           </h3>
         </div>
@@ -182,9 +210,12 @@ const getObjectLength = (obj) => {
             </li>
           </ul>
         </form>
-        <div class="no-todos" v-if="getObjectLength(todos.value) < 1">
+        <div class="no-todos" v-if="todoLength < 1">
           <SparklesIcon class="sparkles" />
           <p>You're all done.</p>
+        </div>
+        <div class="todoList" v-else-if="todoLength >= 1">
+          <span v-for="(todo, todoId) in sortedTodos">{{ todo.todo }}</span>
         </div>
       </main>
     </div>
@@ -440,6 +471,13 @@ main {
 .addTodo ul li .check {
   height: 1rem;
   margin-bottom: -2.5px;
+}
+
+.todoList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 @media all and (max-width: 768px) {
   .sidebar {
