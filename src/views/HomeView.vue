@@ -14,7 +14,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { uid } from "uid";
 
 const isActive = ref(false);
-const todos = ref({});
+const todos = ref([]);
 const sortedTodos = ref(todos.value);
 const todoLength = computed(() => getObjectLength(sortedTodos.value));
 const chosen = ref("");
@@ -73,17 +73,15 @@ const categories = reactive({});
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
+      onValue(firebaseRef(db, `/${auth.currentUser.uid}`), (snapshot) => {
         const data = snapshot.val();
-        if (data === null) {
-          todos.value = {};
+        console.log(data);
+        if (!data.todos) {
+          todos.value = [];
         } else {
           // console.log(data);
-          for (const todo in data) {
-            todos.value[todo] = data[todo];
-            sortedTodos.value[todo] = data[todo];
-            console.log(todos.value);
-          }
+          console.log(data);
+          todos.value = data;
         }
       });
       onValue(
@@ -102,10 +100,18 @@ onMounted(() => {
 
 const addTodo = () => {
   const currentTimestamp = Date.now();
-  set(firebaseRef(db, `${auth.currentUser.uid}/todos/${currentTimestamp}`), {
-    todo: todo.value,
-    isCompleted: false,
-    category: chosen.value === "" ? "none" : chosen.value,
+  todos.value = [
+    ...todos.value,
+    {
+      todo: todo.value,
+      isCompleted: false,
+      category: chosen.value === "" ? "none" : chosen.value,
+      id: currentTimestamp,
+    },
+  ];
+  console.log(todos.value);
+  set(firebaseRef(db, `${auth.currentUser.uid}`), {
+    todos: todos.value,
   });
   todo.value = "";
   chosen.value = "";
