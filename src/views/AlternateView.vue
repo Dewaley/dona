@@ -1,5 +1,5 @@
 <script setup></script>
 
 <template>
-  <h1>Na home be this</h1>
+  <h1>Na alternate be this</h1>
 </template>

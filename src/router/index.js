@@ -28,8 +28,18 @@ export const router = createRouter({
       path: "/",
       alias: "/app",
       name: "home",
-      component: () => import("../views/HomeView.vue"),
+      component: () => import("../views/MainView.vue"),
       meta: { requiresAuth: true },
+      children: [
+        {
+          path: "/",
+          component: () => import("../views/HomeView.vue"),
+        },
+        {
+          path: "/:id",
+          component: () => import("../views/AlternateView.vue"),
+        },
+      ],
     },
   ],
 });
