@@ -14,30 +14,45 @@ import { onAuthStateChanged } from "firebase/auth";
 import { uid } from "uid";
 
 const isActive = ref(false);
+const inputField = ref(null);
 const todos = ref([]);
-const sortedTodos = ref(todos.value);
-const todoLength = computed(() => getObjectLength(sortedTodos.value));
 const chosen = ref("");
 const showList = ref(false);
 const todo = ref("");
 const priority = ref("none");
 const filteredSortedTodos = computed(() => {
-  const filtered = {};
-  const sorted = {};
-  Object.entries(todos).forEach(([key, item]) => {
-    if (item.category === priority.value) {
-      filtered[key] = item;
-    }
-  });
-  const keys = Object.keys(filtered);
-  keys.sort((a, b) => b - a);
-  const sortedObject = {};
-  for (const key of keys) {
-    sortedObject[key] = this.items[key];
-  }
-
-  return sortedObject;
+  const filtered = todos.value
+    .filter((todo) => todo.category === priority.value)
+    .sort((a, b) => b.id - a.id);
+  console.log(filtered);
+  console.log(todos.value);
+  return filtered;
 });
+
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const updatePriority = (cat) => {
   priority.value = cat;
@@ -68,18 +83,17 @@ const setChosen = (category) => {
   showList.value = false;
 };
 
-const categories = reactive({});
+const categories = ref([]);
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      onValue(firebaseRef(db, `/${auth.currentUser.uid}`), (snapshot) => {
+      onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
         const data = snapshot.val();
-        console.log(data);
-        if (!data.todos) {
+        if (!data) {
           todos.value = [];
+          console.log(data);
         } else {
-          // console.log(data);
           console.log(data);
           todos.value = data;
         }
@@ -89,9 +103,7 @@ onMounted(() => {
         (snapshot) => {
           const data = snapshot.val();
           // console.log(data);
-          for (const category in data) {
-            categories[category] = data[category];
-          }
+          categories.value = data;
         }
       );
     }
@@ -100,7 +112,8 @@ onMounted(() => {
 
 const addTodo = () => {
   const currentTimestamp = Date.now();
-  todos.value = [
+  console.log(todos.value);
+  set(firebaseRef(db, `${auth.currentUser.uid}/todos`), [
     ...todos.value,
     {
       todo: todo.value,
@@ -108,24 +121,14 @@ const addTodo = () => {
       category: chosen.value === "" ? "none" : chosen.value,
       id: currentTimestamp,
     },
-  ];
-  console.log(todos.value);
-  set(firebaseRef(db, `${auth.currentUser.uid}`), {
-    todos: todos.value,
-  });
+  ]);
   todo.value = "";
   chosen.value = "";
   isFocused.value = false;
+  inputField.value.blur();
 };
 
 const isFocused = ref(false);
-
-const modifyCategory = (inputString) => {
-  if (typeof inputString !== "string") {
-    return inputString;
-  }
-  return inputString.replace(/_/g, " ");
-};
 
 const getObjectLength = (obj) => {
   let count = 0;
@@ -172,8 +175,15 @@ const getObjectLength = (obj) => {
           {{ priority }}
           <h3>Good night,</h3>
           <h3>
-            <span v-if="todoLength < 1">No more tasks. Enjoy your day. </span>
-            <span v-else>It's Tuesday, Jun 20 - 7 tasks</span>
+            <span v-if="filteredSortedTodos.length < 1"
+              >No more tasks. Enjoy your day.
+            </span>
+            <span v-else
+              >It's {{ daysOfWeek[new Date().getDay()] }},
+              {{ monthNames[new Date().getMonth()] }}
+              {{ new Date().getDate() }} - {{ filteredSortedTodos.length }}
+              {{ filteredSortedTodos.length > 1 ? "tasks" : "task" }}</span
+            >
           </h3>
         </div>
         <form
@@ -189,6 +199,7 @@ const getObjectLength = (obj) => {
             placeholder="Create new task"
             v-model="todo"
             @focus="isFocused = true"
+            ref="inputField"
           />
           <span class="explicit">e</span>
           <span class="extras">
@@ -204,24 +215,27 @@ const getObjectLength = (obj) => {
           </span>
           <ul v-if="showList">
             <li
-              v-for="(color, category) in categories"
+              v-for="category in categories"
               :key="category"
-              @click="setChosen(category)"
+              @click="setChosen(category.category)"
             >
               <div>
-                <span class="ring" :style="{ borderColor: color }"></span>
-                <span class="cat">{{ modifyCategory(category) }}</span>
+                <span
+                  class="ring"
+                  :style="{ borderColor: category.color }"
+                ></span>
+                <span class="cat">{{ category.category }}</span>
               </div>
               <CheckIcon class="check" v-if="chosen === category" />
             </li>
           </ul>
         </form>
-        <div class="no-todos" v-if="todoLength < 1">
+        <div class="no-todos" v-if="filteredSortedTodos.length < 1">
           <SparklesIcon class="sparkles" />
           <p>You're all done.</p>
         </div>
-        <div class="todoList" v-else-if="todoLength >= 1">
-          <span v-for="(todo, todoId) in sortedTodos">{{ todo.todo }}</span>
+        <div class="todoList" v-else-if="filteredSortedTodos.length >= 1">
+          <span v-for="todo in filteredSortedTodos">{{ todo.todo }}</span>
         </div>
       </main>
     </div>

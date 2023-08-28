@@ -90,11 +90,15 @@ const categoryColor = (color) => {
 };
 
 const addCategory = () => {
-  console.log(newCategory.category, newCategory.color);
-  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), {
-    ...categories,
-    [newCategory.category.toLowerCase()]: newCategory.color,
-  });
+  const currentTimestamp = Date.now();
+  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), [
+    ...categories.value,
+    {
+      color: newCategory.color,
+      category: newCategory.category,
+      id: currentTimestamp,
+    },
+  ]);
   inputField.value.value = "";
 };
 
@@ -165,13 +169,13 @@ const logout = () => {
         </span>
       </li>
       <li
-        v-for="(color, category) in categories"
+        v-for="category in categories"
         class="active"
-        @click="updatePriority(category)"
+        @click="updatePriority(category.category)"
       >
         <span class="fragment">
-          <span class="logo" :style="{ borderColor: color }"></span>
-          <span class="list">{{ category }}</span>
+          <span class="logo" :style="{ borderColor: category.color }"></span>
+          <span class="list">{{ category.category }}</span>
         </span>
         <span class="fragment">
           <Popper

@@ -22,12 +22,29 @@ const isValidPassword = (password) => {
 };
 
 const addCategories = () => {
-  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), {
-    personal: "#C08FD1",
-    work: "#8E4207",
-    errands: "#E7C93D",
-    road_trip: "#75FA92",
-  });
+  const currentTimestamp = Date.now();
+  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), [
+    {
+      category: "personal",
+      color: "#C08FD1",
+      id: currentTimestamp,
+    },
+    {
+      category: "work",
+      color: "#C08FD1",
+      id: currentTimestamp,
+    },
+    {
+      category: "errands",
+      color: "#C08FD1",
+      id: currentTimestamp,
+    },
+    {
+      category: "road_trip",
+      color: "#C08FD1",
+      id: currentTimestamp,
+    },
+  ]);
 };
 
 const Register = () => {
