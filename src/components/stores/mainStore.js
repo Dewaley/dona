@@ -41,6 +41,7 @@ export const useMainStore = defineStore("mainStore", () => {
   });
 
   const getTodosAndCategories = () => {
+    console.log(route?.params?.id);
     onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
       const data = snapshot.val();
       if (!data) {

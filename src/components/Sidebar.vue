@@ -2,7 +2,7 @@
 import Popper from "vue3-popper";
 import { ref } from "vue";
 import { signOut, getAuth } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { colorNames, colorList } from "../components/ColorNames";
 import { onClickOutside } from "@vueuse/core";
@@ -10,6 +10,7 @@ import { useMainStore } from "./stores/mainStore";
 import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const route = useRoute();
 const store = useMainStore();
 
 const { categories, newCategory, catField, editing } = storeToRefs(store);
@@ -53,6 +54,10 @@ const toggleInput = () => {
 //   console.log(colorList.value);
 // };
 
+const modifyString = (string) => {
+  return string.toLowerCase().replace(" ", "_");
+};
+
 const changeBoxColor = () => {
   if (isValidColor(customColor.value)) {
     mainBoxColor.value = customColor.value;
@@ -92,7 +97,11 @@ const logout = () => {
 <template>
   <div class="side-container">
     <ul>
-      <li class="active home">
+      <li
+        class="home"
+        :class="{ active: route?.params?.id === undefined }"
+        @click="router.push('/app')"
+      >
         <span class="fragment">
           <span class="logo"></span>
           <span class="list">Home</span>
@@ -110,7 +119,11 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <li class="active completed">
+      <li
+        class="completed"
+        :class="{ active: route?.params?.id === 'completed' }"
+        @click="router.push('/app/completed')"
+      >
         <span class="fragment">
           <span class="logo"></span>
           <span class="list">Completed</span>
@@ -146,7 +159,13 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <li v-for="category in categories" class="active">
+      <li
+        v-for="category in categories"
+        :class="{
+          active: route?.params?.id === modifyString(category.category),
+        }"
+        @click="router.push(`/app/${modifyString(category.category)}`)"
+      >
         <span class="fragment">
           <span class="logo" :style="{ borderColor: category.color }"></span>
           <span class="list">{{ category.category }}</span>
