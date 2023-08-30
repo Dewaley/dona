@@ -1,63 +1,17 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
 import { Bars3BottomLeftIcon } from "@heroicons/vue/24/solid";
-import {
-  SparklesIcon,
-  CheckIcon,
-  ChevronDownIcon,
-} from "@heroicons/vue/24/outline";
 import Popper from "vue3-popper";
-import { onMounted, ref, reactive, provide, watch, computed } from "vue";
-import { ref as firebaseRef, onValue, set } from "firebase/database";
-import { auth, db } from "../main";
+import { onMounted, ref } from "vue";
+import { auth } from "../main";
 import { onAuthStateChanged } from "firebase/auth";
-import { uid } from "uid";
-import { RouterView, useRoute } from "vue-router";
+import { RouterView } from "vue-router";
+import { useMainStore } from "../components/stores/mainStore";
 
 const isActive = ref(false);
-const route = useRoute();
-const inputField = ref(null);
-const todos = ref([]);
-const chosen = ref("");
-const showList = ref(false);
-const todo = ref("");
-const priority = ref("none");
-const filteredSortedTodos = computed(() => {
-  if (priority.value === "none") {
-    const filtered = todos.value.sort((a, b) => b.id - a.id);
-    return filtered;
-  } else if (priority.value === "isCompleted") {
-    const filtered = todos.value
-      .filter((todo) => todo.isCompleted === true)
-      .sort((a, b) => b.id - a.id);
-    console.log(filtered);
-    console.log(todos.value);
-    return filtered;
-  } else {
-    const filtered = todos.value
-      .filter((todo) => todo.category === priority.value)
-      .sort((a, b) => b.id - a.id);
-    console.log(filtered);
-    console.log(todos.value);
-    return filtered;
-  }
-});
+const store = useMainStore();
 
-const updatePriority = (cat) => {
-  priority.value = cat;
-  console.log(priority.value);
-};
-
-const toggleShowList = () => {
-  showList.value = !showList.value;
-};
-const processString = (inputString) => {
-  if (inputString.length <= 10) {
-    return inputString;
-  } else {
-    return inputString.slice(0, 10) + "...";
-  }
-};
+const { getTodosAndCategories } = store;
 
 const toggleSidebar = () => {
   isActive.value = !isActive.value;
@@ -65,85 +19,17 @@ const toggleSidebar = () => {
 const disableSidebar = () => {
   isActive.value = false;
 };
-const setChosen = (category) => {
-  chosen.value = category;
-  showList.value = false;
-};
-
-const categories = ref([]);
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
-        const data = snapshot.val();
-        if (!data) {
-          todos.value = [];
-          console.log(data);
-        } else {
-          console.log("data", route.params.id);
-          todos.value = data;
-        }
-      });
-      onValue(
-        firebaseRef(db, `/${auth.currentUser.uid}/categories`),
-        (snapshot) => {
-          const data = snapshot.val();
-          // console.log(data);
-          categories.value = data;
-        }
-      );
+      getTodosAndCategories();
     }
   });
-});
-
-const addTodo = () => {
-  const currentTimestamp = Date.now();
-  console.log(todos.value);
-  set(firebaseRef(db, `${auth.currentUser.uid}/todos`), [
-    ...todos.value,
-    {
-      todo: todo.value,
-      isCompleted: false,
-      category: chosen.value === "" ? "none" : chosen.value,
-      id: currentTimestamp,
-    },
-  ]);
-  todo.value = "";
-  chosen.value = "";
-  isFocused.value = false;
-  inputField.value.blur();
-};
-
-const isFocused = ref(false);
-
-const getObjectLength = (obj) => {
-  let count = 0;
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      count++;
-    }
-  }
-  console.log("count", count);
-  return count;
-};
-
-provide("priority", {
-  priority,
-  updatePriority,
-  filteredSortedTodos,
-  isFocused,
-  showList,
-  toggleShowList,
-  processString,
-  categories,
-  chosen,
-  setChosen,
 });
 </script>
 
 <template>
-  <!-- <h2>HomeView &#127968;</h2> -->
   <div class="main">
     <div
       class="overlay"
@@ -170,7 +56,6 @@ provide("priority", {
           <Bars3BottomLeftIcon class="menu" @click="toggleSidebar"
         /></Popper>
       </div>
-      {{ route.params.id === undefined ? 2222 : route.params.id }}
       <RouterView />
     </div>
   </div>

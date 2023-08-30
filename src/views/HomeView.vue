@@ -1,29 +1,51 @@
 <script setup>
-import { inject } from "vue";
+import { ref } from "vue";
 import {
   SparklesIcon,
   CheckIcon,
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
+import { useMainStore } from "../components/stores/mainStore";
+import { storeToRefs } from "pinia";
+import { daysOfWeek, monthNames } from "../components/date";
+import { onClickOutside } from "@vueuse/core";
 
-const {
-  priority,
-  updatePriority,
-  filteredSortedTodos,
-  isFocused,
-  showList,
-  toggleShowList,
-  processString,
-  categories,
-  chosen,
-  setChosen,
-} = inject("priority");
+const showList = ref(false);
+const categoryList = ref(null);
+
+const store = useMainStore();
+const { categories, filteredSortedTodos, todo, chosen, isFocused, inputField } =
+  storeToRefs(store);
+const { addTodo } = store;
+
+const toggleShowList = () => {
+  showList.value = !showList.value;
+};
+
+onClickOutside(categoryList, (e) => {
+  if (showList) {
+    showList.value = false;
+  }
+});
+
+const processString = (inputString) => {
+  if (inputString.length <= 10) {
+    return inputString;
+  } else {
+    return inputString.slice(0, 10) + "...";
+  }
+};
+
+const setChosen = (category) => {
+  chosen.value = category;
+  showList.value = false;
+};
 </script>
 
 <template>
   <main>
     <div class="header">
-      {{ priority }} {{ isFocused }}
+      {{ isFocused }} {{ chosen }} {{ todo }}
       <h3>Good night,</h3>
       <h3>
         <span v-if="filteredSortedTodos.length < 1"
@@ -40,7 +62,7 @@ const {
     <form
       class="addTodo"
       :class="{ focusing: isFocused }"
-      @submit.prevent="addTodo"
+      @submit.prevent="addTodo()"
     >
       <span class="box"></span>
       <input
@@ -60,7 +82,7 @@ const {
           <ChevronDownIcon class="drop" />
         </span>
       </span>
-      <ul v-if="showList">
+      <ul v-if="showList" ref="categoryList">
         <li
           v-for="category in categories"
           :key="category"
@@ -70,7 +92,7 @@ const {
             <span class="ring" :style="{ borderColor: category.color }"></span>
             <span class="cat">{{ category.category }}</span>
           </div>
-          <CheckIcon class="check" v-if="chosen === category" />
+          <CheckIcon class="check" v-if="chosen === category.category" />
         </li>
       </ul>
     </form>
@@ -220,9 +242,6 @@ main {
   border-radius: 5px;
 }
 
-.addTodo .calend {
-}
-
 .addTodo .list-name {
   height: 2rem;
   width: 8rem;
@@ -237,6 +256,7 @@ main {
   justify-content: center;
   gap: 0.3rem;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 .addTodo .list-name .drop {

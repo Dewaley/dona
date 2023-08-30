@@ -1,35 +1,25 @@
 <script setup>
 import Popper from "vue3-popper";
-import { ref, reactive, inject } from "vue";
+import { ref } from "vue";
 import { signOut, getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { colorNames, colorList } from "../components/ColorNames";
 import { onClickOutside } from "@vueuse/core";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../main";
-import { ref as firebaseRef, onValue, set } from "firebase/database";
-import { onMounted } from "vue";
-import { defineProps } from "vue";
+import { useMainStore } from "./stores/mainStore";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const store = useMainStore();
 
-const isFocused = ref(false);
+const { categories, newCategory, catField, editing } = storeToRefs(store);
+const { addCategory } = store;
+
 const customColor = ref("#0096FF");
 const mainBoxColor = ref(customColor.value);
 const showColors = ref(false);
-const inputField = ref(null);
 const colorBox = ref(null);
 const newList = ref(null);
-
-const { priority, updatePriority } = inject("priority");
-
-defineProps(["categories"]);
-
-const newCategory = reactive({
-  category: "",
-  color: customColor.value,
-});
 
 onClickOutside(colorBox, (e) => {
   if (showColors) {
@@ -42,9 +32,10 @@ const toggleShowColors = () => {
 };
 
 const toggleInput = () => {
-  isFocused.value = true;
-  if (inputField.value) {
-    inputField.value.focus();
+  editing.value = true;
+  alert("Hiiii");
+  if (catField.value) {
+    catField.value.focus();
   }
 };
 
@@ -87,19 +78,6 @@ const categoryColor = (color) => {
   showColors.value = false;
 
   console.log(newCategory);
-};
-
-const addCategory = () => {
-  const currentTimestamp = Date.now();
-  set(firebaseRef(db, `${auth.currentUser.uid}/categories`), [
-    ...categories.value,
-    {
-      color: newCategory.color,
-      category: newCategory.category,
-      id: currentTimestamp,
-    },
-  ]);
-  inputField.value.value = "";
 };
 
 const logout = () => {
@@ -168,11 +146,7 @@ const logout = () => {
           <span class="count">7</span>
         </span>
       </li>
-      <li
-        v-for="category in categories"
-        class="active"
-        @click="updatePriority(category.category)"
-      >
+      <li v-for="category in categories" class="active">
         <span class="fragment">
           <span class="logo" :style="{ borderColor: category.color }"></span>
           <span class="list">{{ category.category }}</span>
@@ -193,7 +167,7 @@ const logout = () => {
 
       <form
         class="new-list-container"
-        :class="{ focusing: isFocused }"
+        :class="{ focusing: editing }"
         @submit.prevent="addCategory"
         ref="newList"
       >
@@ -214,7 +188,7 @@ const logout = () => {
         <div class="fields">
           <button @click="toggleInput">Create new list</button>
           <input
-            ref="inputField"
+            ref="catField"
             type="text"
             placeholder="List name"
             v-model="newCategory.category"
