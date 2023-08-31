@@ -44,8 +44,8 @@ const toggleShowColors = () => {
   showColors.value = true;
 };
 
-const toggleOptions = () => {
-  showOptions.value = "home";
+const toggleOptions = (val) => {
+  showOptions.value = val;
 };
 
 const toggleInput = () => {
@@ -113,9 +113,12 @@ const logout = () => {
 <template>
   <div class="side-container">
     <ul>
-      <li class="category-container active">
-        <span class="cat-icon"></span>
-        <span class="list">home</span>
+      <li
+        class="category-container home"
+        :class="{ active: route?.params?.id === undefined }"
+      >
+        <span class="cat-icon" @click="router.push('/app')"></span>
+        <span class="list" @click="router.push('/app')">home</span>
         <span class="fragment">
           <Popper
             class="pop"
@@ -124,7 +127,7 @@ const logout = () => {
             offset-distance="10"
             placement="top"
           >
-            <span class="options" @click="toggleOptions">&#8942;</span>
+            <span class="options" @click="toggleOptions('home')">&#8942;</span>
           </Popper>
           <span class="count">7</span>
         </span>
@@ -139,9 +142,89 @@ const logout = () => {
           </li>
         </ul>
       </li>
-      {{
-        showOptions
-      }}
+      <li
+        class="category-container completed"
+        :class="{ active: route?.params?.id === 'completed' }"
+      >
+        <span class="cat-icon" @click="router.push('/app/completed')"></span>
+        <span class="list" @click="router.push('/app/completed')"
+          >completed</span
+        >
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options" @click="toggleOptions('completed')"
+              >&#8942;</span
+            >
+          </Popper>
+          <span class="count">7</span>
+        </span>
+        <ul
+          v-if="showOptions === 'completed'"
+          class="showOptions"
+          ref="optionBox"
+        >
+          <li>
+            <BackspaceIcon class="option-icon" />
+            <span>Remove all tasks</span>
+          </li>
+          <li>
+            <TrashIcon class="option-icon" />
+            <span>Delete</span>
+          </li>
+        </ul>
+      </li>
+      <li
+        v-for="category in categories"
+        :class="{
+          active: route?.params?.id === modifyString(category.category),
+        }"
+        class="category-container"
+      >
+        <span
+          class="cat-icon"
+          :style="{ borderColor: category.color }"
+          @click="router.push(`/app/${modifyString(category.category)}`)"
+        ></span>
+        <span
+          class="list"
+          @click="router.push(`/app/${modifyString(category.category)}`)"
+          >{{ category.category }}</span
+        >
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options" @click="toggleOptions(category.category)"
+              >&#8942;</span
+            >
+          </Popper>
+          <span class="count">7</span>
+        </span>
+        <ul
+          v-if="showOptions === category.category"
+          class="showOptions"
+          ref="optionBox"
+        >
+          <li>
+            <BackspaceIcon class="option-icon" />
+            <span>Remove all tasks</span>
+          </li>
+          <li>
+            <TrashIcon class="option-icon" />
+            <span>Delete</span>
+          </li>
+        </ul>
+      </li>
       <!-- <li
         class="home"
         :class="{ active: route?.params?.id === undefined }"
@@ -345,6 +428,7 @@ ul {
   border: 1px solid #e7e9ec;
   padding: 0.5rem;
   border-radius: 10px;
+  z-index: 100;
 }
 
 .showOptions li {
@@ -370,15 +454,15 @@ ul {
   text-transform: capitalize;
   background-color: transparent;
 }
-.home .logo {
+.home .cat-icon {
   border-color: #ae2783;
 }
 
-.today .logo {
+.today .cat-icon {
   border-color: #5dc015;
 }
 
-.completed .logo {
+.completed .cat-icon {
   border-color: #acc1fa;
 }
 .fragment {
