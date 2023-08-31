@@ -72,9 +72,9 @@ onMounted(() => {
   margin: 0.5rem 0rem 0.5rem 0.5rem;
   background-color: #f9f9fb;
   height: calc(100vh - 1rem);
-  overflow-y: scroll;
   width: 27vw;
   min-width: 280px;
+  overflow-x: visible;
   padding: 2.5rem;
   border-radius: 23px;
   z-index: 100;
@@ -85,6 +85,8 @@ onMounted(() => {
 }
 .desktop-sidebar {
   display: initial;
+  background-color: blue !important;
+  overflow: visible;
 }
 .overlay {
   display: none;
@@ -102,6 +104,7 @@ onMounted(() => {
     width: 250px;
     left: -320px;
     transition: left 350ms ease;
+    overflow: hidden;
     /* display: none; */
   }
   .desktop-sidebar {

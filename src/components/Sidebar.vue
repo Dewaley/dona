@@ -3,7 +3,12 @@ import Popper from "vue3-popper";
 import { ref } from "vue";
 import { signOut, getAuth } from "firebase/auth";
 import { useRouter, useRoute } from "vue-router";
-import { ChevronDownIcon, PlusIcon } from "@heroicons/vue/24/outline";
+import {
+  ChevronDownIcon,
+  PlusIcon,
+  BackspaceIcon,
+  TrashIcon,
+} from "@heroicons/vue/24/outline";
 import { colorNames, colorList } from "../components/ColorNames";
 import { onClickOutside } from "@vueuse/core";
 import { useMainStore } from "./stores/mainStore";
@@ -19,17 +24,28 @@ const { addCategory } = store;
 const customColor = ref("#0096FF");
 const mainBoxColor = ref(customColor.value);
 const showColors = ref(false);
+const showOptions = ref("");
 const colorBox = ref(null);
 const newList = ref(null);
+const optionBox = ref(null);
 
 onClickOutside(colorBox, (e) => {
   if (showColors) {
     showColors.value = false;
   }
 });
+onClickOutside(optionBox, (e) => {
+  if (showOptions.value !== "") {
+    showOptions.value = "";
+  }
+});
 
 const toggleShowColors = () => {
   showColors.value = true;
+};
+
+const toggleOptions = () => {
+  showOptions.value = "home";
 };
 
 const toggleInput = () => {
@@ -97,14 +113,43 @@ const logout = () => {
 <template>
   <div class="side-container">
     <ul>
-      <li
+      <li class="category-container active">
+        <span class="cat-icon"></span>
+        <span class="list">home</span>
+        <span class="fragment">
+          <Popper
+            class="pop"
+            hover
+            content="List actions"
+            offset-distance="10"
+            placement="top"
+          >
+            <span class="options" @click="toggleOptions">&#8942;</span>
+          </Popper>
+          <span class="count">7</span>
+        </span>
+        <ul v-if="showOptions === 'home'" class="showOptions" ref="optionBox">
+          <li>
+            <BackspaceIcon class="option-icon" />
+            <span>Remove all tasks</span>
+          </li>
+          <li>
+            <TrashIcon class="option-icon" />
+            <span>Delete</span>
+          </li>
+        </ul>
+      </li>
+      {{
+        showOptions
+      }}
+      <!-- <li
         class="home"
         :class="{ active: route?.params?.id === undefined }"
         @click="router.push('/app')"
       >
         <span class="fragment">
           <span class="logo"></span>
-          <span class="list">Home</span>
+          <input type="text" name="" id="" class="list" value="Home" />
         </span>
         <span class="fragment">
           <Popper
@@ -182,7 +227,7 @@ const logout = () => {
           </Popper>
           <span class="count">7</span>
         </span>
-      </li>
+      </li> -->
 
       <form
         class="new-list-container"
@@ -262,7 +307,7 @@ ul {
   gap: 0.2rem;
 }
 
-li {
+.category-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -271,13 +316,59 @@ li {
   border-radius: 10px;
   height: 2.5rem;
   cursor: pointer;
+  gap: 0.5rem;
+  position: relative;
 }
+
 .active {
   background-color: #f5f7fa;
 }
+
+.category-container .cat-icon {
+  min-width: 0.9rem;
+  height: 0.9rem;
+  display: flex;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+.showOptions {
+  position: absolute;
+  top: 3rem;
+  left: calc(100% - 4.5rem);
+  min-width: 12rem;
+  background-color: red;
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  background-color: #f9f9fa;
+  border: 1px solid #e7e9ec;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.showOptions li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.showOptions li:hover {
+  background-color: #eceff2;
+}
+
+.showOptions li .option-icon {
+  height: 1rem;
+}
+
 .list {
+  width: 100%;
   font-weight: 500;
   text-transform: capitalize;
+  background-color: transparent;
 }
 .home .logo {
   border-color: #ae2783;
@@ -308,7 +399,7 @@ li {
 }
 .options {
   padding: 0.75rem;
-  display: none;
+  opacity: 0;
 }
 
 .working {
@@ -318,7 +409,7 @@ li {
   background-color: #e7e9ec;
 }
 li:hover .options {
-  display: flex;
+  opacity: 1;
 }
 .active .count {
   color: #616870;
