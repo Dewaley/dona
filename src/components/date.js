@@ -22,3 +22,18 @@ export const monthNames = [
   "November",
   "December",
 ];
+
+export const abbrMonthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec",
+];

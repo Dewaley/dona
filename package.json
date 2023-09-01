@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
+    "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^10.3.0",
     "axios": "^1.4.0",
     "firebase": "^9.22.0",
     "pinia": "^2.1.6",
+    "v-calendar": "^3.0.3",
     "vue": "^3.2.47",
     "vue-flatpickr-component": "^11.0.3",
     "vue-router": "^4.2.0",

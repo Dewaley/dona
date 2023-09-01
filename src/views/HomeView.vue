@@ -1,31 +1,56 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 import {
   SparklesIcon,
   CheckIcon,
   ChevronDownIcon,
+  CalendarIcon,
 } from "@heroicons/vue/24/outline";
 import { useMainStore } from "../components/stores/mainStore";
 import { storeToRefs } from "pinia";
-import { daysOfWeek, monthNames } from "../components/date";
+import { daysOfWeek, monthNames, abbrMonthNames } from "../components/date";
 import { onClickOutside } from "@vueuse/core";
+import { DatePicker } from "v-calendar";
 
 const showList = ref(false);
 const categoryList = ref(null);
+const calendar = ref(false);
+const calendarBox = ref(null);
 
 const store = useMainStore();
-const { categories, filteredSortedTodos, todo, chosen, isFocused, inputField } =
-  storeToRefs(store);
+const {
+  categories,
+  filteredSortedTodos,
+  todo,
+  date,
+  chosen,
+  isFocused,
+  inputField,
+} = storeToRefs(store);
 const { addTodo } = store;
 
 const toggleShowList = () => {
   showList.value = !showList.value;
 };
 
+const toggleCalendar = () => {
+  calendar.value = true;
+};
+
 onClickOutside(categoryList, (e) => {
   if (showList) {
     showList.value = false;
   }
+});
+
+onClickOutside(calendarBox, (e) => {
+  if (calendar) {
+    calendar.value = false;
+  }
+});
+
+watch(date, () => {
+  calendar.value = false;
 });
 
 const processString = (inputString) => {
@@ -45,7 +70,7 @@ const setChosen = (category) => {
 <template>
   <main>
     <div class="header">
-      {{ isFocused }} {{ chosen }} {{ todo }}
+      {{ isFocused }} {{ chosen }} {{ todo }} {{ date }}
       <h3>Good night,</h3>
       <h3>
         <span v-if="filteredSortedTodos.length < 1"
@@ -76,6 +101,13 @@ const setChosen = (category) => {
       />
       <span class="explicit">e</span>
       <span class="extras">
+        <span class="calend-container" @click="toggleCalendar">
+          <!-- {{
+            date && `${abbrMonthNames[date.getMonth() + 1]} ${date.getDate()}`
+          }} -->
+          <span v-if="date" class="dot"></span>
+          <CalendarIcon />
+        </span>
         <span class="list-name" @click="toggleShowList">
           <span class="list-style"></span>
           <span>{{ chosen === "" ? "No List" : processString(chosen) }}</span>
@@ -95,6 +127,15 @@ const setChosen = (category) => {
           <CheckIcon class="check" v-if="chosen === category.category" />
         </li>
       </ul>
+      <div class="calendar-container" ref="calendarBox">
+        <DatePicker
+          v-if="calendar"
+          mode="date"
+          :min-date="new Date()"
+          v-model="date"
+          class="calendar"
+        />
+      </div>
     </form>
     <div class="no-todos" v-if="filteredSortedTodos.length < 1">
       <SparklesIcon class="sparkles" />
@@ -153,6 +194,7 @@ main {
   align-items: center;
   background-color: #e0e3e6;
   padding: 0.75rem;
+  height: 3.5rem;
   border-radius: 10px;
   margin-bottom: 2rem;
   position: relative;
@@ -209,8 +251,8 @@ main {
 }
 
 .addTodo .explicit {
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -218,7 +260,7 @@ main {
   border-radius: 5px;
   text-transform: capitalize;
   color: #616870;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .focusing.addTodo .explicit {
@@ -226,20 +268,37 @@ main {
 }
 
 .addTodo .extras {
-  display: flex;
   max-width: 0px;
-  overflow: hidden;
+  overflow-y: visible;
+  display: none;
   gap: 0.5rem;
   white-space: nowrap;
+}
+
+.addTodo .calendar-container {
+  position: absolute;
+  top: 4rem;
+  right: 0;
 }
 
 .addTodo .calend-container {
   display: flex;
   height: 2rem;
-  width: 2rem;
   background-color: #e9ecef;
   padding: 0.4rem;
   border-radius: 5px;
+  position: relative;
+}
+
+.addTodo .calend-container .dot {
+  display: flex;
+  height: 0.5rem;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background-color: blue;
+  position: absolute;
+  right: -0.25rem;
+  top: -0.25rem;
 }
 
 .addTodo .list-name {
@@ -273,6 +332,7 @@ main {
 
 .focusing.addTodo .extras {
   max-width: 8rem;
+  display: flex;
 }
 
 .addTodo ul {

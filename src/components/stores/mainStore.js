@@ -7,6 +7,7 @@ import { auth, db } from "../../main";
 export const useMainStore = defineStore("mainStore", () => {
   const route = useRoute();
   const todos = ref([]);
+  const date = ref(null);
   const categories = ref([]);
   const chosen = ref("");
   const todo = ref("");
@@ -18,7 +19,6 @@ export const useMainStore = defineStore("mainStore", () => {
     category: "",
     color: "#0096FF",
   });
-  const pseudoCat = ref([]);
 
   const filteredSortedTodos = computed(() => {
     if (route?.params?.id === undefined) {
@@ -70,14 +70,18 @@ export const useMainStore = defineStore("mainStore", () => {
     });
   };
   const addTodo = () => {
+    // console.log(new Date(date.value.toString()));
     if (todo.value.length > 0 && typeof todo.value === "string") {
       const currentTimestamp = Date.now();
       const newTodo = {
         todo: todo.value,
         isCompleted: false,
         category: chosen.value === "" ? "none" : chosen.value,
+        deadline: date.value === null ? "none" : date.value.toString(),
         id: currentTimestamp,
+        jup: 22,
       };
+      console.log(newTodo);
       set(firebaseRef(db, `${auth.currentUser.uid}/todos`), [
         ...todos.value,
         { ...newTodo },
@@ -86,11 +90,13 @@ export const useMainStore = defineStore("mainStore", () => {
       todo.value = "";
       isFocused.value = false;
       inputField.value.blur();
+      date.value = null;
     } else {
       chosen.value = "none";
       todo.value = "";
       isFocused.value = false;
       inputField.value.blur();
+      date.value = null;
     }
   };
 
@@ -144,6 +150,7 @@ export const useMainStore = defineStore("mainStore", () => {
     categories,
     chosen,
     todo,
+    date,
     isFocused,
     editing,
     inputField,

@@ -119,7 +119,7 @@ const logout = () => {
         <span class="cat-icon" @click="router.push('/app')"></span>
         <span class="list" @click="router.push('/app')">home</span>
         <span class="fragment">
-          <Popper
+          <!-- <Popper
             class="pop"
             hover
             content="List actions"
@@ -127,10 +127,10 @@ const logout = () => {
             placement="top"
           >
             <span class="options" @click="toggleOptions('home')">&#8942;</span>
-          </Popper>
+          </Popper> -->
           <span class="count">7</span>
         </span>
-        <ul v-if="showOptions === 'home'" class="showOptions" ref="optionBox">
+        <!-- <ul v-if="showOptions === 'home'" class="showOptions" ref="optionBox">
           <li>
             <BackspaceIcon class="option-icon" />
             <span>Remove all tasks</span>
@@ -139,7 +139,7 @@ const logout = () => {
             <TrashIcon class="option-icon" />
             <span>Delete</span>
           </li>
-        </ul>
+        </ul> -->
       </li>
       <li
         class="category-container completed"
@@ -172,10 +172,10 @@ const logout = () => {
             <BackspaceIcon class="option-icon" />
             <span>Remove all tasks</span>
           </li>
-          <li>
+          <!-- <li>
             <TrashIcon class="option-icon" />
             <span>Delete</span>
-          </li>
+          </li> -->
         </ul>
       </li>
       <li
@@ -218,11 +218,8 @@ const logout = () => {
             <BackspaceIcon class="option-icon" />
             <span>Remove all tasks</span>
           </li>
-          <li>
-            <TrashIcon
-              class="option-icon"
-              @click="deleteCategory(category.id)"
-            />
+          <li @click="deleteCategory(category.id)">
+            <TrashIcon class="option-icon" />
             <span>Delete</span>
           </li>
         </ul>
