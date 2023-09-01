@@ -190,28 +190,6 @@ main {
   font-weight: 400;
   font-size: 1.2rem;
 }
-.menu-container {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: calc(100% - 1rem);
-  display: none;
-  /* overflow: hidden; */
-}
-/* .popper {
-  white-space: nowrap;
-} */
-.menu {
-  width: 2.5rem;
-  padding: 0.5rem;
-  background-color: rgb(227, 224, 230);
-  border-radius: 10px;
-  cursor: pointer;
-}
-.menu:hover {
-  background-color: rgba(227, 224, 230, 0.7);
-}
-
 .addTodo {
   display: flex;
   align-items: center;

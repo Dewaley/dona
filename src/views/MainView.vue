@@ -91,6 +91,24 @@ onMounted(() => {
 .overlay {
   display: none;
 }
+.menu-container {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: calc(100% - 1rem);
+  display: none;
+  /* overflow: hidden; */
+}
+.menu {
+  width: 2.5rem;
+  padding: 0.5rem;
+  background-color: rgb(227, 224, 230);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.menu:hover {
+  background-color: rgba(227, 224, 230, 0.7);
+}
 .container {
   display: flex;
   justify-content: center;
@@ -145,6 +163,9 @@ onMounted(() => {
 @media all and (max-width: 320px) {
   .sidebar {
     overflow: scroll;
+  }
+  .container {
+    padding-top: 1.5rem;
   }
 }
 </style>
