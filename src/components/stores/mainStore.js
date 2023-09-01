@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed, reactive } from "vue";
 import { useRoute } from "vue-router";
-import { ref as firebaseRef, onValue, set } from "firebase/database";
+import { ref as firebaseRef, onValue, set, remove } from "firebase/database";
 import { auth, db } from "../../main";
 
 export const useMainStore = defineStore("mainStore", () => {
@@ -18,6 +18,7 @@ export const useMainStore = defineStore("mainStore", () => {
     category: "",
     color: "#0096FF",
   });
+  const pseudoCat = ref([]);
 
   const filteredSortedTodos = computed(() => {
     if (route?.params?.id === undefined) {
@@ -42,6 +43,21 @@ export const useMainStore = defineStore("mainStore", () => {
 
   const getTodosAndCategories = () => {
     console.log(route?.params?.id);
+    onValue(
+      firebaseRef(db, `/${auth.currentUser.uid}/categories`),
+      (snapshot) => {
+        const data = snapshot.val();
+        // console.log(data);
+        categories.value = data;
+      }
+    );
+    onValue(
+      firebaseRef(db, `/${auth.currentUser.uid}/categories/2`),
+      (snapshot) => {
+        const data = snapshot.val();
+        console.log(data);
+      }
+    );
     onValue(firebaseRef(db, `/${auth.currentUser.uid}/todos`), (snapshot) => {
       const data = snapshot.val();
       if (!data) {
@@ -52,14 +68,6 @@ export const useMainStore = defineStore("mainStore", () => {
         todos.value = data;
       }
     });
-    onValue(
-      firebaseRef(db, `/${auth.currentUser.uid}/categories`),
-      (snapshot) => {
-        const data = snapshot.val();
-        // console.log(data);
-        categories.value = data;
-      }
-    );
   };
   const addTodo = () => {
     if (todo.value.length > 0 && typeof todo.value === "string") {
@@ -91,7 +99,6 @@ export const useMainStore = defineStore("mainStore", () => {
       catField.value.value.length > 0 &&
       typeof catField.value.value === "string"
     ) {
-      alert(catField.value.value);
       const currentTimestamp = Date.now();
       set(firebaseRef(db, `${auth.currentUser.uid}/categories`), [
         ...categories.value,
@@ -105,6 +112,31 @@ export const useMainStore = defineStore("mainStore", () => {
       newCategory.color = "#0096FF";
       editing.value = false;
     }
+  };
+  const findIndexOfCategory = (id) => {
+    for (let i = 0; i <= categories.value.length; i++) {
+      if (id === categories.value[i].id) {
+        console.log(i);
+        return i;
+      }
+    }
+    return -1;
+  };
+  const deleteCategory = async (id) => {
+    alert("clicked now");
+    const fakeData = [];
+    remove(
+      firebaseRef(
+        db,
+        `${auth.currentUser.uid}/categories/${findIndexOfCategory(id)}`
+      )
+    );
+    for (let i = 0; i <= categories.value.length; i++) {
+      if (id !== categories.value[i].id) {
+        fakeData.push(categories.value[i]);
+      }
+    }
+    categories.value = [...fakeData];
   };
 
   return {
@@ -121,5 +153,6 @@ export const useMainStore = defineStore("mainStore", () => {
     getTodosAndCategories,
     addTodo,
     addCategory,
+    deleteCategory,
   };
 });

@@ -22,27 +22,26 @@ const isValidPassword = (password) => {
 };
 
 const addCategories = () => {
-  const currentTimestamp = Date.now();
   set(firebaseRef(db, `${auth.currentUser.uid}/categories`), [
     {
       category: "personal",
       color: "#C08FD1",
-      id: currentTimestamp,
+      id: 1,
     },
     {
       category: "work",
       color: "#C08FD1",
-      id: currentTimestamp,
+      id: 2,
     },
     {
       category: "errands",
       color: "#C08FD1",
-      id: currentTimestamp,
+      id: 3,
     },
     {
       category: "road_trip",
       color: "#C08FD1",
-      id: currentTimestamp,
+      id: 4,
     },
   ]);
 };

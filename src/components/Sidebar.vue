@@ -19,7 +19,7 @@ const route = useRoute();
 const store = useMainStore();
 
 const { categories, newCategory, catField, editing } = storeToRefs(store);
-const { addCategory } = store;
+const { addCategory, deleteCategory } = store;
 
 const customColor = ref("#0096FF");
 const mainBoxColor = ref(customColor.value);
@@ -50,7 +50,6 @@ const toggleOptions = (val) => {
 
 const toggleInput = () => {
   editing.value = true;
-  alert("Hiiii");
   if (catField.value) {
     catField.value.focus();
   }
@@ -220,7 +219,10 @@ const logout = () => {
             <span>Remove all tasks</span>
           </li>
           <li>
-            <TrashIcon class="option-icon" />
+            <TrashIcon
+              class="option-icon"
+              @click="deleteCategory(category.id)"
+            />
             <span>Delete</span>
           </li>
         </ul>
