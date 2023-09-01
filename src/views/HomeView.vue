@@ -5,6 +5,7 @@ import {
   CheckIcon,
   ChevronDownIcon,
   CalendarIcon,
+  TrashIcon,
 } from "@heroicons/vue/24/outline";
 import { useMainStore } from "../components/stores/mainStore";
 import { storeToRefs } from "pinia";
@@ -141,9 +142,31 @@ const setChosen = (category) => {
       <SparklesIcon class="sparkles" />
       <p>You're all done.</p>
     </div>
-    <div class="todoList" v-else-if="filteredSortedTodos.length >= 1">
-      <span v-for="todo in filteredSortedTodos">{{ todo.todo }}</span>
-    </div>
+    <ul class="todo-list" v-else-if="filteredSortedTodos.length >= 1">
+      <li v-for="todo in filteredSortedTodos" class="todo-item">
+        <div class="osi">
+          <span for="" class="box"></span>
+          <span class="todo-text">
+            <span class="bigText">
+              {{
+                todo.todo.length > 30
+                  ? todo.todo.slice(0, 30).trim() + "..."
+                  : todo.todo
+              }}
+            </span>
+            <span class="mobileText">{{
+              todo.todo.length > 15
+                ? todo.todo.slice(0, 15).trim() + "..."
+                : todo.todo
+            }}</span>
+          </span>
+        </div>
+        <div class="otun">
+          <span class="ring"></span>
+          <span class="del"><TrashIcon /></span>
+        </div>
+      </li>
+    </ul>
   </main>
 </template>
 
@@ -193,8 +216,8 @@ main {
   display: flex;
   align-items: center;
   background-color: #e0e3e6;
-  padding: 0.75rem;
-  height: 3.5rem;
+  padding: 1rem;
+  height: 3.25rem;
   border-radius: 10px;
   margin-bottom: 2rem;
   position: relative;
@@ -288,6 +311,7 @@ main {
   padding: 0.4rem;
   border-radius: 5px;
   position: relative;
+  cursor: pointer;
 }
 
 .addTodo .calend-container .dot {
@@ -381,15 +405,94 @@ main {
   margin-bottom: -2.5px;
 }
 
-.todoList {
+.todo-list {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.todo-list .todo-item {
+  width: 100%;
+  height: 3.25rem;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 10px;
+}
+
+.todo-list .todo-item .osi {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.todo-list .todo-item .ring {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+.todo-list .todo-item .todo-text {
+  /* max-width: 70%; */
+  /* width: 100%; */
+  /* border: 1px solid red; */
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+.todo-list .todo-item .todo-text .bigText {
+  display: block;
+}
+
+.todo-list .todo-item .todo-text .mobileText {
+  display: none;
+}
+
+.todo-list .todo-item .del {
+  display: flex;
+  height: 2rem;
+  padding: 0.4rem;
+  border-radius: 5px;
+  display: none;
+  cursor: pointer;
+}
+
+.todo-item:hover .del {
+  display: flex;
+}
+
+.todo-item:hover .ring {
+  display: none;
+}
+
+.todo-list .todo-item .osi .box {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  background-color: #e2e5e8;
+  border-radius: 5px;
+  cursor: pointer;
 }
 @media all and (max-width: 768px) {
   main {
     width: 85vw;
+  }
+}
+
+@media all and (max-width: 425px) {
+  .todo-list .todo-item .todo-text .mobileText {
+    display: block;
+  }
+
+  .todo-list .todo-item .todo-text .bigText {
+    display: none;
   }
 }
 </style>

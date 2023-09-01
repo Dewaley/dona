@@ -79,7 +79,6 @@ export const useMainStore = defineStore("mainStore", () => {
         category: chosen.value === "" ? "none" : chosen.value,
         deadline: date.value === null ? "none" : date.value.toString(),
         id: currentTimestamp,
-        jup: 22,
       };
       console.log(newTodo);
       set(firebaseRef(db, `${auth.currentUser.uid}/todos`), [
