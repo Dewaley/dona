@@ -526,6 +526,7 @@ li:hover .options {
   display: flex;
   align-items: center;
   padding: 0.75rem;
+  position: relative;
   /* gap: 2rem; */
 }
 
@@ -654,8 +655,9 @@ li:hover .options {
 
 .new-list-container .color-options {
   position: absolute;
-  top: 21rem;
+  top: 2.5rem;
   /* width: 20rem; */
+  margin-right: 0.5rem;
   padding: 1rem 0;
   border-radius: 10px;
   display: none;
@@ -663,6 +665,7 @@ li:hover .options {
   flex-direction: column;
   gap: 1rem;
   background-color: #fefefe;
+  cursor: pointer;
 }
 
 .new-list-container .show.color-options {
@@ -748,6 +751,12 @@ li:hover .options {
 
   .new-list-container .color-options .colors div span {
     height: 0.75rem;
+  }
+}
+@media all and (max-width: 320px) {
+  .showOptions {
+    right: 0 !important;
+    left: initial;
   }
 }
 </style>

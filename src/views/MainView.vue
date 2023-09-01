@@ -39,7 +39,7 @@ onMounted(() => {
     <div class="sidebar" :class="{ active: isActive }">
       <div class="mobile-sidebar"><Sidebar /></div>
       <div class="desktop-sidebar">
-        <Sidebar :categories="categories" />
+        <Sidebar />
       </div>
     </div>
     <div class="container">
@@ -82,6 +82,7 @@ onMounted(() => {
 }
 .mobile-sidebar {
   display: none;
+  overflow: visible;
 }
 .desktop-sidebar {
   display: initial;
@@ -122,7 +123,7 @@ onMounted(() => {
     width: 250px;
     left: -320px;
     transition: left 350ms ease;
-    overflow: hidden;
+    overflow: visible;
     /* display: none; */
   }
   .desktop-sidebar {
@@ -138,6 +139,7 @@ onMounted(() => {
 
   .container {
     margin-left: 0;
+    padding-top: 1.5rem;
   }
   .overlay {
     position: absolute;
